@@ -1,0 +1,48 @@
+<svg fill="none" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        .container {
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            margin: 0;
+        }
+        .layered-shadow-text {
+            color: #fff;
+            font-weight: bold;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 87px;
+            text-align: center;
+            animation: smoothPurpleStack 1s cubic-bezier(0, 0, 1, 1) infinite alternate;
+        }
+
+        @keyframes smoothPurpleStack {
+            0% {
+                text-shadow:
+                    5px 5px 0px #b000e6,
+                    7.5px 7.5px 0px #9c00c9,
+                    10px 10px 0px #610070;
+            }
+            50% {
+                text-shadow:
+                    0px 5px 0px #b000e6,
+                    0px 7.5px 0px #9c00c9,
+                    0px 10px 0px #610070;
+            }
+            100% {
+                text-shadow:
+                    -5px 5px 0px #b000e6,
+                    -7.5px 7.5px 0px #9c00c9,
+                    -10px 10px 0px #610070;
+            }
+        }
+      </style>
+      <div class="container">
+        <h1 class="layered-shadow-text">Dancing Bunny GN</h1>
+      </div>
+    </div>
+  </foreignObject>
+</svg>

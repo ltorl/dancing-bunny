@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Home - Classroom</title>
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsklEQVQYV6WPMY9MYRSGnzO5K5mrsczINCujkBh3ihU1CX9BMSsKtqTQ6mzDr5BFQiLRSkRoFRu7icIQ3YoCESHL3DEbmfMqzjc3d1BxmvPlS97nPK9J4n8mm75Yvsz00zkzYTYPkwypAbJ4e2xkyBuw0LpvPzfaMpURrgMUAIhgBZGBGgGznIzpGMx4OW7xatLGbBYGJJTecoHHu2h+pZ/vgP8gQ4YQw3GbB1+OQgIgkS80kYvR7igBHLkzaImi+Q1kZKEJuJB71WDvnpy1M1dBsPb0BqNJiWpGqSWN6GRJ05ELubiwvEJ33xLdxSVWT5xHVRclw8ilCoY89STwt7fu0V08BMD687thKM1biKhgM3CtwmhScu3xdSRR7pZVuPInDicDknoA+p0eRecY/U4PgOGH12y83WT783aAHDSrIBlAquBcOXmJ00dOUZ+i02Nw/CwPh4+4+exWfMqQjExuYIDC4vdwfQ7v786FEWSoAYiiucPgwDuGb9bnQlVloCw/stJ+T5F/j4MyrHxyUKCw+NsIIK4pbbAAy8gkWwUu2uzSDKT6+jMIINkdU93xH+YXTrImgXmBBtYAAAAASUVORK5CYII=" />
+  </head>
+  <body>
+    <button
+      onclick='fetch("https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/v2.html")
+        .then(response => response.text())
+        .then(text => {
+          const newWin = window.open("about:blank", "_blank");
+          if (newWin) {
+            newWin.document.open();
+            newWin.document.write(text);
+            newWin.document.close();
+          }
+        });'
+      style="width: 100%; height: 100%; font-size: 14; font-family: Comic Sans MS;">
+      bookmark this page <br><br>
+      click to open
+    </button>
+  </body>
+</html>
+

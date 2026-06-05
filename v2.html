@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New tab</title>
+    <link rel="icon" type="image/png" sizes="48x48" media="(prefers-color-scheme: light)"
+        href="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny/NewTabIcon.png">
+    <link rel="icon" type="image/png" sizes="48x48" media="(prefers-color-scheme: dark)"
+        href="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny/NewTabIconLight.png">
+    <style>
+        /* ==========================================================================
+       1. Root Variables & Reset
+       ========================================================================== */
+        :root {
+            --bg1: #2e3244;
+            --bg2: #561a86;
+            --text: #ffffff;
+            --tab-bg: rgba(0, 0, 0, 0.28);
+            --tab-active: rgba(176, 0, 230, 0.28);
+            --sidebar-w: 150px;
+            --topbar-h: 58px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Comic Sans MS', sans-serif;
+            color: var(--text);
+            overflow: hidden;
+            background: linear-gradient(135deg, #2e3244 30%, #561a86 100%);
+            background-attachment: fixed;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+
+        /* ==========================================================================
+       2. Custom Scrollbars
+       ========================================================================== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track,
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+
+        /* ==========================================================================
+       3. Tab Bar & Header Controls
+       ========================================================================== */
+        #tab-bar {
+            height: var(--topbar-h);
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex: 0 0 auto;
+            z-index: 2000;
+        }
+
+        #tab-bar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        #tab-bar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--tab-bg);
+            color: #fff;
+            padding: 0 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex: 0 0 auto;
+            max-width: 240px;
+            height: 42px;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .tab-btn:hover,
+        #mute-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.24);
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .tab-btn.active {
+            background: var(--tab-active);
+            border-color: rgba(176, 0, 230, 0.6);
+            box-shadow: 0 0 0 1px rgba(176, 0, 230, 0.15) inset;
+        }
+
+        .tab-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 700;
+            flex: 1;
+            text-align: left;
+        }
+
+        .tab-close {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            cursor: pointer;
+            line-height: 24px;
+            font-size: 16px;
+            flex: 0 0 auto;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 80, 80, 0.35);
+        }
+
+        #mute-btn {
+            margin-left: auto;
+            height: 42px;
+            width: 48px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background-color: rgba(0, 0, 0, 0.28);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 22px 22px;
+            cursor: pointer;
+        }
+
+
+        /* ==========================================================================
+       4. Navigation Sidebar
+       ========================================================================== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: var(--topbar-h);
+            width: 110px;
+            height: calc(100vh - var(--topbar-h));
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(86, 26, 134, 0.94);
+            backdrop-filter: blur(10px);
+            padding: 16px 8px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            overscroll-behavior: contain;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+        }
+
+        .sidebar-btn {
+            background: #000;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            min-height: 45px;
+            padding: 0px 7px 2px;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: -1px 1px 0px #00e6e6, -2px 2px 0px #01cccc;
+            width: 100%;
+        }
+
+        .sidebar-btn:hover {
+            background: #a369d3;
+            transform: scale(1.04);
+        }
+
+
+        /* ==========================================================================
+       5. Content Panels & Layouts
+       ========================================================================== */
+        #content-area {
+            position: relative;
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .panel {
+            position: absolute;
+            inset: 0;
+            display: none;
+            overflow: hidden;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        #home-pane {
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-left: var(--sidebar-w);
+        }
+
+        .main-content {
+            min-height: 100%;
+            padding: 20px 22px 50px;
+            position: relative;
+        }
+
+
+        /* ==========================================================================
+       6. Typography & Headings
+       ========================================================================== */
+        h1 {
+            color: white;
+            text-align: center;
+            margin: 10px 0 18px;
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-family: 'Comic Sans MS', sans-serif;
+            text-shadow: -5px 5px 0px #b000e6, -10px 10px 0px #610070, 2px 2px 2px rgba(206, 89, 55, 0);
+        }
+
+        .subheading {
+            text-align: center;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .subheading a {
+            color: #34a1eb;
+        }
+
+        .letter-header {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* ==========================================================================
+       7. Interactive Inputs & Buttons
+       ========================================================================== */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        #gameSearch,
+        #random-game-btn {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        #gameSearch:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgb(89, 134, 218);
+            box-shadow: 0 0 15px rgba(89, 134, 218, 0.3);
+        }
+
+        #gameSearch::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #random-game-btn {
+            margin-top: 30px;
+            transform: scale(0.90);
+        }
+
+        #random-game-btn:hover {
+            background: #a369d3;
+            transform: scale(1);
+            box-shadow: 0 0 15px rgba(176, 0, 230, 0.4);
+        }
+
+        .letter-section {
+            margin-bottom: 40px;
+            padding: 0 20px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 100px;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="button"] {
+            background: #561a86;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 600px;
+            color: white;
+            text-align: left;
+        }
+
+        input[type="button"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background: #a369d3;
+        }
+
+        input[type="button"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-row {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .game-row input[type="button"] {
+            flex: 1;
+            max-width: none;
+        }
+
+        .star-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 55px;
+            width: 55px;
+            box-sizing: border-box;
+            font-size: 1.7rem;
+            line-height: 0;
+            padding: 0 0 6px 0;
+            background: none;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .star-btn:hover,
+        .star-btn.starred {
+            border-color: gold;
+            color: gold;
+        }
+
+        .star-btn.starred {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+
+        /* ==========================================================================
+       8. Dynamic Utility View Panes (Game, Runner, Proxy Controls)
+       ========================================================================= */
+        .game-pane,
+        .game-frame,
+        .loading-wrap {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+        }
+
+        .game-pane {
+            position: absolute;
+            inset: 0;
+        }
+
+        .game-frame {
+            border: 0;
+            display: block;
+        }
+
+        .loading-wrap {
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .runner-pane {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #000;
+            color: white;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .runner-pane h2 {
+            margin: 0;
+        }
+
+        .runner-column {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .runner-textarea {
+            width: 100%;
+            flex: 1;
+            resize: none;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            background: #48494a;
+            color: #fff;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 14px;
+            outline: none;
+            min-height: 220px;
+        }
+
+        .runner-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .runner-controls button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #03a5fc;
+            color: white;
+            font-weight: 700;
+        }
+
+        .runner-controls button:hover {
+            background: #006094;
+        }
+
+        .runner-frame {
+            width: 100%;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            background: white;
+        }
+
+        /* Common layout configuration for external operational utility keys */
+        #open-runner-btn,
+        #open-proxy-btn,
+        #force-open-proxy-btn,
+        #open-form-btn,
+        #doc-btn,
+        #open-bookmarklet-runner-btn {
+            font-family: Comic Sans MS, sans-serif;
+            background: none;
+            border: 2px solid rgba(176, 0, 230 0.25);
+            border-radius: 8px;
+            color: #b000e6;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 12px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            line-height: 2;
+            margin-left: 8px;
+        }
+
+        #open-runner-btn:hover,
+        #open-proxy-btn:hover,
+        #open-form-btn:hover,
+        #doc-btn:hover,
+        #open-bookmarklet-runner-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(176, 0, 230, 0.4);
+        }
+
+        #proxy-selector {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            padding: 8px 40px 8px 18px;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            backdrop-filter: blur(10px);
+            margin: 0 10px;
+            font-family: inherit;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 15px) center;
+        }
+
+        #proxy-selector option {
+            background: #2e3244;
+            color: white;
+        }
+
+
+        /* ==========================================================================
+       9. Responsive Media Queries
+       ========================================================================== */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-w: 66px;
+            }
+
+            .sidebar-btn {
+                font-size: 16px;
+                padding: 8px 6px;
+            }
+
+            .main-content {
+                padding: 16px 12px 42px;
+            }
+
+            .runner-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="tab-bar" aria-label="Tabs"></div>
+
+    <div id="content-area">
+        <div id="home-pane" class="panel active">
+            <div class="sidebar" id="sidebar"></div>
+
+            <div class="main-content" id="home-content">
+                <h1 class="layered-shadow-text">Dancing Bunny GN</h1>
+                <h2 class="subheading"
+                    style="color: rgba(0,0,0,0.7); font-size: 1px; opacity: 0.8; font-weight: normal;">
+                    Made by a Turtle
+                </h2>
+
+                <h2 class="subheading">
+                    Documentation:
+                    <button id="doc-btn" onclick="
+                        fetch('https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/documentation.html')
+                        .then(response => response.text())
+                        .then(text => {
+                            const newWin = window.open('about:blank', '_blank');
+                            if (newWin) {
+                                newWin.document.open();
+                                newWin.document.write(text);
+                                newWin.document.close();
+                            }
+                        });">
+                        Dancing Bunny GN Doc
+                    </button>
+                </h2>
+
+                <h2 class="subheading">
+                    Run HTML Code:
+                    <button id="open-runner-btn" class="btn-outline">Open Code Runner</button>
+                </h2>
+
+                <h2 class="subheading">
+                    Run Bookmarklet Code:
+                    <button id="open-bookmarklet-runner-btn" style="line-height: 2; margin-left: 8px;">
+                        Open Bookmarklet Runner
+                    </button>
+                </h2>
+
+                <h2 class="subheading">
+                    Other Apps:
+                    <select id="proxy-selector">
+                        <option value="https://truffled.lol/">Truffled</option>
+                        <option value="https://incog.works/">Incognito</option>
+                        <option value="https://gointospace.app/">Interstellar</option>
+                        <option value="https://anura.pro/">Anura</option>
+                        <option value="https://definitelyscience.com/">Definitely Science</option>
+                    </select>
+
+                    <button class="btn-outline" id="open-proxy-btn" onclick="openSelectedProxy()">Open</button>
+                    <button class="btn-outline" onclick="openSelectedProxyForceIframe()" id="force-open-proxy-btn">Force
+                        Iframe</button>
+                </h2>
+
+                <h2 class="subheading">
+                    Make a sugestion:
+                    <button id="open-form-btn" class="btn-outline">Open Form</button>
+                </h2>
+
+                <br /><br />
+
+                <div class="search-container">
+                    <input type="text" id="gameSearch" placeholder="Search for a game..." oninput="filterGames()">
+                    <button id="random-game-btn" onclick="openRandomGame()">Random Game</button>
+                </div>
+
+                <div id="sections-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/gamelist.js"></script>
+
+    <script>
+        const GAME_BASES = [
+            "https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/UGS-Files/",
+            "https://api.codetabs.com/v1/proxy/?quest=https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
+            "https://corsproxy.io/?https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
+            "https://api.allorigins.win/raw?url=https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
+            "https://esm.sh/gh/bubbls/ugs-singlefile@main/UGS-Files/",
+            "https://cdn.statically.io/gh/bubbls/ugs-singlefile/main/UGS-Files/",
+            "https://rawcdn.githack.com/bubbls/ugs-singlefile/main/UGS-Files/"
+        ];
+        const STAR_KEY = "dancing-bunny-starred-v1";
+        const MUTE_KEY = "dancing-bunny-muted-v1";
+
+        let starred = new Set();
+        try {
+            starred = new Set(JSON.parse(localStorage.getItem(STAR_KEY) || "[]"));
+        } catch (e) {
+            console.warn("LocalStorage blocked (running as Data URI). Using session memory.");
+        }
+
+        let isMuted = false;
+        try {
+            localStorage.setItem(MUTE_KEY, "false");
+        } catch (e) { }
+
+        const tabs = new Map();
+        const tabOrder = [];
+
+        const tabBar = document.getElementById("tab-bar");
+        const contentArea = document.getElementById("content-area");
+
+        function saveStarred() {
+            try { localStorage.setItem(STAR_KEY, JSON.stringify([...starred])); } catch (e) { }
+        }
+
+        function saveMute() {
+            try { localStorage.setItem(MUTE_KEY, JSON.stringify(isMuted)); } catch (e) { }
+        }
+
+        function normalizeFileName(name) {
+            if (name.includes(".") && name.lastIndexOf(".") > 0) return name;
+            return name + ".html";
+        }
+
+        function displayNameFromFile(file) {
+            return file.replace(/^cl/i, "").replace(/\.html$/i, "");
+        }
+
+        function sanitizeTitle(title) {
+            return title.replace(/\s+/g, " ").trim().slice(0, 40) || "Tab";
+        }
+
+        function ensureHomeTab() {
+            if (!document.getElementById("tab-home")) {
+                const homeTab = document.createElement("button");
+                homeTab.className = "tab-btn active";
+                homeTab.id = "tab-home";
+                homeTab.innerHTML = `<span class="tab-title">Home</span>`;
+                homeTab.onclick = () => activateTab("home");
+                tabBar.appendChild(homeTab);
+            }
+        }
+
+        function ensureMuteButton() {
+            if (document.getElementById("mute-btn")) return;
+            const btn = document.createElement("button");
+            btn.id = "mute-btn";
+            btn.type = "button";
+            btn.textContent = isMuted ? "🔇" : "🔊";
+            btn.title = isMuted ? "Unmute All" : "Mute All";
+            btn.onclick = toggleMuteAll;
+            tabBar.appendChild(btn);
+        }
+
+        function setMuteButtonState() {
+            const btn = document.getElementById("mute-btn");
+            if (!btn) return;
+            btn.textContent = isMuted ? "🔇" : "🔊";
+            btn.title = isMuted ? "Unmute All" : "Mute All";
+        }
+
+        function saveMuteAndApply() {
+            saveMute();
+            setMuteButtonState();
+
+            document.querySelectorAll("audio, video").forEach(el => {
+                el.muted = isMuted;
+                if (isMuted) { try { el.pause(); } catch (e) { } }
+            });
+
+            document.querySelectorAll("iframe").forEach(frame => {
+                try {
+                    frame.contentWindow?.postMessage({ type: "GLOBAL_MUTE", muted: isMuted }, "*");
+                    if (typeof frame.contentWindow?.__applyGlobalMute === "function") {
+                        frame.contentWindow.__applyGlobalMute(isMuted);
+                    }
+                } catch (e) { }
+            });
+        }
+
+        function toggleMuteAll() {
+            isMuted = !isMuted;
+            saveMuteAndApply();
+        }
+
+        (function protectTabIdentity() {
+            const targetTitle = "New tab";
+
+            document.title = targetTitle;
+            Object.defineProperty(document, 'title', {
+                get: () => targetTitle,
+                set: (val) => {
+                    console.warn(`Blocked title change to: "${val}"`);
+                    return targetTitle;
+                },
+                configurable: false
+            });
+
+            const originalIcons = {
+                light: "data:image/png;base64,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",
+                dark: "data:image/png;base64,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"
+            };
+
+            const revertFavicons = () => {
+                let lightIcon = document.querySelector("link[media='(prefers-color-scheme: light)']");
+                let darkIcon = document.querySelector("link[media='(prefers-color-scheme: dark)']");
+
+                if (!lightIcon) {
+                    lightIcon = document.createElement('link');
+                    lightIcon.rel = 'icon';
+                    lightIcon.media = '(prefers-color-scheme: light)';
+                    document.head.appendChild(lightIcon);
+                }
+                if (!darkIcon) {
+                    darkIcon = document.createElement('link');
+                    darkIcon.rel = 'icon';
+                    darkIcon.media = '(prefers-color-scheme: dark)';
+                    document.head.appendChild(darkIcon);
+                }
+
+                if (lightIcon.getAttribute('href') !== originalIcons.light) {
+                    lightIcon.setAttribute('href', originalIcons.light);
+                }
+                if (darkIcon.getAttribute('href') !== originalIcons.dark) {
+                    darkIcon.setAttribute('href', originalIcons.dark);
+                }
+            };
+
+            const observer = new MutationObserver((mutations) => {
+                let triggerRevert = false;
+                for (const mutation of mutations) {
+                    if (mutation.type === 'attributes' && mutation.target.tagName === 'LINK') {
+                        triggerRevert = true;
+                    } else if (mutation.type === 'childList') {
+                        triggerRevert = true;
+                    }
+                }
+                if (triggerRevert) {
+                    observer.disconnect();
+                    revertFavicons();
+                    startObserving();
+                }
+            });
+
+            function startObserving() {
+                observer.observe(document.head, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['href', 'rel']
+                });
+            }
+
+            startObserving();
+        })();
+
+        function setActiveTabButton(id) {
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            const activeBtn = document.getElementById(`tab-${id}`);
+            if (activeBtn) activeBtn.classList.add("active");
+        }
+
+        function setActivePanel(id) {
+            document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+            const panel = document.getElementById(`panel-${id}`);
+            if (panel) {
+                panel.classList.add("active");
+            } else {
+                document.getElementById("home-pane").classList.add("active");
+            }
+        }
+
+        function activateTab(id) {
+            setActiveTabButton(id);
+            setActivePanel(id);
+        }
+
+        function closeTab(id) {
+            const tab = tabs.get(id);
+            if (!tab) return;
+
+            const wasActive = document.getElementById(`tab-${id}`)?.classList.contains("active");
+            const idx = tabOrder.indexOf(id);
+
+            tab.panel.remove();
+            tab.button.remove();
+            tabs.delete(id);
+
+            if (idx !== -1) tabOrder.splice(idx, 1);
+
+            if (wasActive) {
+                let nextId = "home";
+                if (idx > 0 && tabOrder[idx - 1]) {
+                    nextId = tabOrder[idx - 1];
+                } else if (tabOrder.length > 0) {
+                    nextId = tabOrder[0];
+                }
+                activateTab(nextId);
+            }
+        }
+
+        function createTabButton(id, title, closable) {
+            const btn = document.createElement("button");
+            btn.className = "tab-btn";
+            btn.id = `tab-${id}`;
+            btn.innerHTML = `<span class="tab-title"></span>`;
+            btn.querySelector(".tab-title").textContent = sanitizeTitle(title);
+            btn.onclick = () => activateTab(id);
+
+            if (closable) {
+                const close = document.createElement("button");
+                close.className = "tab-close";
+                close.type = "button";
+                close.innerHTML = "×";
+                close.onclick = (e) => {
+                    e.stopPropagation();
+                    closeTab(id);
+                };
+                btn.appendChild(close);
+            }
+            return btn;
+        }
+
+        function openLoadingTab(id, title) {
+            ensureHomeTab();
+            ensureMuteButton();
+
+            const existing = tabs.get(id);
+            if (existing) {
+                activateTab(id);
+                return existing;
+            }
+
+            const button = createTabButton(id, title, true);
+            tabBar.insertBefore(button, document.getElementById("mute-btn"));
+
+            const panel = document.createElement("div");
+            panel.className = "panel game-pane";
+            panel.id = `panel-${id}`;
+
+            panel.innerHTML = `
+        <div class="loading-wrap" id="loading-${id}" style="flex-direction: column; gap: 15px;">
+            <div id="loading-text-${id}">Loading ${sanitizeTitle(title)}...</div>
+            <div id="logs-${id}" style="font-family: monospace; font-size: 14px; text-align: left; max-width: 80%; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; display: none; overflow-y: auto; max-height: 50%;"></div>
+        </div>`;
+            contentArea.appendChild(panel);
+
+            const tab = { id, title, button, panel };
+            tabs.set(id, tab);
+            tabOrder.push(id);
+            activateTab(id);
+            return tab;
+        }
+
+        function injectBaseHref(html, baseHref) {
+            if (/<base\s/i.test(html)) return html;
+            if (/<head[^>]*>/i.test(html)) {
+                return html.replace(/<head[^>]*>/i, match => `${match}<base href="${baseHref}">`);
+            }
+            return `<!DOCTYPE html><html><head><base href="${baseHref}"></head><body>${html}</body></html>`;
+        }
+
+        function injectMuteSupport(html, muted = false) {
+            const muteScript = `
+<script>
+(function() {
+  window.__GLOBAL_MUTED = ${muted ? "true" : "false"};
+  const contexts = new Set();
+  const OriginalAudioContext = window.AudioContext || window.webkitAudioContext;
+
+  function safeCall(fn) { try { return fn(); } catch (e) {} }
+
+  function applyMutedState(muteState) {
+    const mutedNow = !!muteState;
+    window.__GLOBAL_MUTED = mutedNow;
+
+    document.querySelectorAll("audio, video").forEach(el => {
+      el.muted = mutedNow;
+      if (mutedNow) safeCall(() => el.pause());
+    });
+
+    contexts.forEach(ctx => {
+      if (!ctx) return;
+      if (mutedNow && ctx.state === "running") safeCall(() => ctx.suspend());
+      if (!mutedNow && ctx.state === "suspended") safeCall(() => ctx.resume());
+    });
+  }
+
+  if (OriginalAudioContext) {
+    const WrappedAudioContext = function(...args) {
+      const ctx = new OriginalAudioContext(...args);
+      contexts.add(ctx);
+      if (window.__GLOBAL_MUTED) safeCall(() => ctx.suspend());
+      return ctx;
+    };
+    WrappedAudioContext.prototype = OriginalAudioContext.prototype;
+    try { window.AudioContext = WrappedAudioContext; } catch (e) {}
+    try { window.webkitAudioContext = WrappedAudioContext; } catch (e) {}
+  }
+
+  window.__applyGlobalMute = applyMutedState;
+
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (data && data.type === "GLOBAL_MUTE") {
+      applyMutedState(!!data.muted);
+    }
+  });
+
+  if (window.__GLOBAL_MUTED) { applyMutedState(true); }
+})();
+<\/script>`;
+
+            if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, `${muteScript}</head>`);
+            if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${muteScript}</body>`);
+            return `${muteScript}${html}`;
+        }
+
+        function applyMuteToIframe(iframe) {
+            iframe.onload = () => {
+                try {
+                    iframe.contentWindow?.postMessage({ type: "GLOBAL_MUTE", muted: isMuted }, "*");
+                    if (typeof iframe.contentWindow?.__applyGlobalMute === "function") {
+                        iframe.contentWindow.__applyGlobalMute(isMuted);
+                    }
+                } catch (e) { }
+            };
+        }
+
+        async function openGameTab(file) {
+            const normalized = normalizeFileName(file);
+            const id = `game-${normalized.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
+            const title = displayNameFromFile(file);
+
+            if (tabs.has(id)) { activateTab(id); return; }
+
+            const tab = openLoadingTab(id, title);
+            const logArea = tab.panel.querySelector(`#logs-${id}`);
+
+            function addLog(msg, isError = false) {
+                if (logArea) {
+                    logArea.style.display = "block";
+                    const logLine = document.createElement("div");
+                    logLine.textContent = msg;
+                    logLine.style.color = isError ? "#ff5555" : "#ffcc00";
+                    logLine.style.marginBottom = "6px";
+                    logArea.appendChild(logLine);
+                    return logLine;
+                }
+                return null;
+            }
+
+            try {
+                const encoded = encodeURIComponent(normalized);
+                let text = null;
+                let successBase = null;
+
+                for (const base of GAME_BASES) {
+                    let baseName = base;
+                    try { baseName = new URL(base).hostname; } catch (e) { }
+
+                    const logElement = addLog(`Attempting to fetch via ${baseName}... `);
+                    const controller = new AbortController();
+                    let skipBtn = null;
+
+                    if (logElement) {
+                        skipBtn = document.createElement("button");
+                        skipBtn.textContent = "Skip";
+                        skipBtn.style.cssText = "margin-left: 10px; padding: 2px 8px; font-size: 12px; cursor: pointer; background: #606060; color: white; border: none; border-radius: 4px;";
+                        skipBtn.onclick = () => {
+                            controller.abort();
+                            skipBtn.disabled = true;
+                            skipBtn.textContent = "Skipping...";
+                        };
+                        logElement.appendChild(skipBtn);
+                    }
+
+                    try {
+                        const response = await fetch(`${base}${encoded}?t=${Date.now()}`, { signal: controller.signal });
+                        if (skipBtn) skipBtn.remove();
+
+                        if (response.ok) {
+                            const fetchedText = await response.text();
+                            const cleanText = fetchedText.trim().toLowerCase();
+
+                            if (cleanText === "404: not found" || cleanText === "not found" || cleanText.includes("404 page not found")) {
+                                addLog(`⚠️ Proxy returned a fake 200 (404 missing file) from ${baseName}`);
+                                continue;
+                            }
+
+                            addLog(`✅ Success from ${baseName}! Building game frame...`);
+                            text = fetchedText; successBase = base; break;
+                        } else {
+                            addLog(`⚠️ Failed to fetch from ${baseName}: HTTP ${response.status}`);
+                        }
+                    } catch (e) {
+                        if (skipBtn) skipBtn.remove();
+                        if (e.name === 'AbortError') { addLog(`⏭️ Manually skipped ${baseName}.`); continue; }
+                        addLog(`⚠️ Network error on ${baseName}: ${e.message}`);
+                    }
+                }
+
+                if (!text) throw new Error("All proxy servers failed, were skipped, or the file does not exist.");
+
+                let html = injectMuteSupport(text, isMuted);
+                html = injectBaseHref(html, successBase);
+
+                tab.panel.innerHTML = "";
+                const iframe = document.createElement("iframe");
+                iframe.className = "game-frame";
+                iframe.srcdoc = html;
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+                iframe.referrerPolicy = "no-referrer";
+                applyMuteToIframe(iframe);
+                tab.panel.appendChild(iframe);
+
+            } catch (err) {
+                addLog(`❌ CRITICAL ERROR: ${err.message}`, true);
+                const loadingText = tab.panel.querySelector(`#loading-text-${id}`);
+                if (loadingText) {
+                    loadingText.textContent = `Failed to load ${sanitizeTitle(title)}.`;
+                    loadingText.style.color = "#ff5555";
+                }
+            }
+        }
+
+        function openHtmlPreviewTab(htmlCode) {
+            const id = "html-preview";
+            const title = "HTML Code";
+
+            const prepared = injectBaseHref(injectMuteSupport(htmlCode, isMuted), document.baseURI);
+
+            if (tabs.has(id)) {
+                const existing = tabs.get(id);
+                existing.panel.innerHTML = "";
+                const iframe = document.createElement("iframe");
+                iframe.className = "game-frame";
+                iframe.setAttribute(
+                    "sandbox",
+                    "allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                );
+                iframe.referrerPolicy = "no-referrer";
+                iframe.srcdoc = prepared;
+                applyMuteToIframe(iframe);
+                existing.panel.appendChild(iframe);
+                activateTab(id);
+                return;
+            }
+
+            const button = createTabButton(id, title, true);
+            tabBar.insertBefore(button, document.getElementById("mute-btn"));
+
+            const panel = document.createElement("div");
+            panel.className = "panel game-pane";
+            panel.id = `panel-${id}`;
+
+            const iframe = document.createElement("iframe");
+            iframe.className = "game-frame";
+            iframe.setAttribute(
+                "sandbox",
+                "allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+            );
+            iframe.referrerPolicy = "no-referrer";
+            iframe.srcdoc = prepared;
+            applyMuteToIframe(iframe);
+
+            panel.appendChild(iframe);
+            contentArea.appendChild(panel);
+
+            const tab = { id, title, button, panel };
+            tabs.set(id, tab);
+            tabOrder.push(id);
+            activateTab(id);
+        }
+
+        function openRunnerTab() {
+            const id = "runner";
+            const title = "HTML Runner";
+
+            if (tabs.has(id)) {
+                activateTab(id);
+                return;
+            }
+
+            const button = createTabButton(id, title, true);
+            tabBar.insertBefore(button, document.getElementById("mute-btn"));
+
+            const panel = document.createElement("div");
+            panel.className = "panel game-pane";
+            panel.id = `panel-${id}`;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "runner-pane";
+
+            wrapper.innerHTML = `
+    <h2>Run HTML Code</h2>
+    <div class="runner-grid">
+      <div class="runner-column">
+        <textarea class="runner-textarea" id="runner-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;My Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+        <div class="runner-controls">
+          <button id="runner-run-btn">Open in New Tab</button>
+          <button id="runner-clear-btn">Clear</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+            panel.appendChild(wrapper);
+            contentArea.appendChild(panel);
+
+            const tab = { id, title, button, panel };
+            tabs.set(id, tab);
+            tabOrder.push(id);
+            activateTab(id);
+
+            const code = panel.querySelector("#runner-code");
+            const runBtn = panel.querySelector("#runner-run-btn");
+            const clearBtn = panel.querySelector("#runner-clear-btn");
+
+            runBtn.onclick = () => {
+                openHtmlPreviewTab(code.value);
+            };
+
+            clearBtn.onclick = () => {
+                code.value = "";
+            };
+        }
+
+        document.getElementById("open-bookmarklet-runner-btn").addEventListener("click", openBookmarkletRunnerTab);
+
+        function openBookmarkletRunnerTab() {
+            const id = "bookmarklet-runner";
+            const title = "Bookmarklet Runner";
+
+            if (tabs.has(id)) {
+                activateTab(id);
+                return;
+            }
+
+            const tab = openLoadingTab(id, title);
+
+            tab.panel.innerHTML = `
+        <div class="runner-pane">
+            <h2>Bookmarklet Runner</h2>
+            <div class="runner-column">
+                <textarea class="runner-textarea" placeholder="Paste your bookmarklet javascript: here..."></textarea>
+                <div class="runner-controls">
+                    <button class="run-btn">Run Bookmarklet</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+            const textarea = tab.panel.querySelector(".runner-textarea");
+            const runBtn = tab.panel.querySelector(".run-btn");
+
+            runBtn.addEventListener("click", () => {
+                let code = textarea.value.trim();
+                if (!code) return;
+
+                // Remove javascript: prefix if present to properly evaluate
+                if (code.toLowerCase().startsWith("javascript:")) {
+                    code = code.substring(11);
+                }
+
+                try {
+                    // Evaluates code inside the context of the document window execution chain
+                    const runFn = new Function(code);
+                    runFn();
+                } catch (err) {
+                    alert("Error running bookmarklet: " + err);
+                }
+            });
+
+            activateTab(id);
+        }
+
+        function makeGameRow(file) {
+            const row = document.createElement("div");
+            row.className = "game-row"; row.dataset.file = file;
+
+            const starBtn = document.createElement("button");
+            starBtn.className = "star-btn" + (starred.has(file) ? " starred" : "");
+            starBtn.textContent = "⭑";
+            starBtn.title = starred.has(file) ? "Remove from favorites" : "Add to favorites";
+            starBtn.dataset.file = file;
+
+            starBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (starred.has(file)) starred.delete(file);
+                else starred.add(file);
+                saveStarred(); syncStarButtons(); renderFavoritesSection();
+            };
+
+            const btn = document.createElement("input");
+            btn.type = "button"; btn.value = displayNameFromFile(file);
+            btn.onclick = () => openGameTab(file);
+
+            row.appendChild(starBtn); row.appendChild(btn); return row;
+        }
+
+        function syncStarButtons() {
+            document.querySelectorAll(".star-btn").forEach(btn => {
+                const file = btn.dataset.file; if (!file) return;
+                btn.classList.toggle("starred", starred.has(file));
+                btn.title = starred.has(file) ? "Remove from favorites" : "Add to favorites";
+            });
+        }
+
+        function renderFavoritesSection() {
+            const existing = document.getElementById("section-fav");
+            if (existing) existing.remove();
+
+            const starSidebarBtn = document.getElementById("sidebar-star");
+            if (starSidebarBtn) starSidebarBtn.style.opacity = starred.size > 0 ? "1" : "0.3";
+
+            if (starred.size === 0) return;
+
+            const section = document.createElement("div");
+            section.className = "letter-section"; section.id = "section-fav";
+
+            const header = document.createElement("div");
+            header.className = "letter-header"; header.textContent = "Favorites"; section.appendChild(header);
+
+            const buttonsContainer = document.createElement("div");
+            buttonsContainer.className = "buttons-container";
+            [...starred].forEach(file => buttonsContainer.appendChild(makeGameRow(file)));
+            section.appendChild(buttonsContainer);
+
+            const container = document.getElementById("sections-container");
+            const firstRealSection = container.firstElementChild;
+            container.insertBefore(section, firstRealSection);
+        }
+
+        function generateSidebar(allChars, filesByChar) {
+            const sidebar = document.getElementById("sidebar"); sidebar.innerHTML = "";
+
+            const searchBtn = document.createElement("button");
+            searchBtn.className = "sidebar-btn"; searchBtn.textContent = "Search";
+            searchBtn.onclick = () => document.getElementById("gameSearch").scrollIntoView({ behavior: "smooth", block: "end" });
+            sidebar.appendChild(searchBtn);
+
+            const favBtn = document.createElement("button");
+            favBtn.className = "sidebar-btn"; favBtn.id = "sidebar-star"; favBtn.textContent = "favs";
+            favBtn.style.opacity = starred.size > 0 ? "1" : "0.3";
+            favBtn.onclick = () => {
+                const section = document.getElementById("section-fav");
+                if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+            };
+            sidebar.appendChild(favBtn);
+
+            allChars.forEach((char) => {
+                if (char === "Search") return;
+                const btn = document.createElement("button");
+                btn.className = "sidebar-btn"; btn.textContent = char;
+                btn.onclick = () => {
+                    const section = document.getElementById(`section-${char}`);
+                    if (section) section.scrollIntoView({ behavior: "smooth", block: filesByChar[char]?.length === 0 ? "end" : "start" });
+                };
+                sidebar.appendChild(btn);
+            });
+        }
+
+        function generateAllSections() {
+            const sidebarChars = ["Search", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "8", "9"];
+            const sectionChars = sidebarChars.filter(c => c !== "Search");
+            const filesByChar = {};
+            sectionChars.forEach(char => filesByChar[char] = []);
+
+            if (typeof files !== "undefined" && Array.isArray(files)) {
+                files.forEach((file) => {
+                    const lower = file.toLowerCase();
+                    if (lower.startsWith("cl")) {
+                        const afterCl = lower.substring(2);
+                        if (afterCl.length > 0) {
+                            const firstChar = afterCl[0].toUpperCase();
+                            if (filesByChar[firstChar]) filesByChar[firstChar].push(file);
+                        }
+                    }
+                });
+            }
+
+            const container = document.getElementById("sections-container"); container.innerHTML = "";
+
+            sectionChars.forEach((char) => {
+                const section = document.createElement("div");
+                section.className = "letter-section"; section.id = `section-${char}`;
+
+                const header = document.createElement("div");
+                header.className = "letter-header"; header.textContent = char; section.appendChild(header);
+
+                const buttonsContainer = document.createElement("div");
+                buttonsContainer.className = "buttons-container";
+                if (filesByChar[char].length > 0) filesByChar[char].forEach(file => buttonsContainer.appendChild(makeGameRow(file)));
+
+                section.appendChild(buttonsContainer); container.appendChild(section);
+            });
+
+            generateSidebar(sidebarChars, filesByChar); renderFavoritesSection();
+        }
+
+        function filterGames() {
+            const input = document.getElementById("gameSearch");
+            const filter = input.value.toLowerCase();
+            const sections = document.querySelectorAll(".letter-section");
+
+            const randomBtn = document.getElementById("random-game-btn");
+            if (randomBtn) randomBtn.style.display = (filter.trim() === "") ? "block" : "none";
+
+            sections.forEach(section => {
+                const rows = section.querySelectorAll(".game-row");
+                let hasVisibleRows = false;
+                rows.forEach(row => {
+                    const btn = row.querySelector('input[type="button"]');
+                    const text = btn ? btn.value.toLowerCase() : "";
+                    const match = text.includes(filter);
+                    row.style.display = match ? "" : "none";
+                    if (match) hasVisibleRows = true;
+                });
+                section.style.display = hasVisibleRows ? "" : "none";
+            });
+        }
+
+        document.getElementById("open-runner-btn").addEventListener("click", openRunnerTab);
+
+        async function fetchAndInjectProxy(targetUrl, tab, title, id) {
+            const logArea = tab.panel.querySelector(`#logs-${id}`);
+
+            function addLog(msg, isError = false) {
+                if (logArea) {
+                    logArea.style.display = "block";
+                    const logLine = document.createElement("div");
+                    logLine.textContent = msg;
+                    logLine.style.color = isError ? "#ff5555" : "#ffcc00";
+                    logArea.appendChild(logLine);
+                }
+            }
+
+            try {
+                let text = null;
+                const corsBridges = [
+                    "https://api.allorigins.win/raw?url=",
+                    "https://corsproxy.io/?",
+                    "https://api.codetabs.com/v1/proxy/?quest="
+                ];
+
+                for (const bridge of corsBridges) {
+                    let bridgeName = new URL(bridge).hostname;
+                    addLog(`Attempting to fetch proxy HTML via ${bridgeName}...`);
+
+                    try {
+                        const response = await fetch(`${bridge}${encodeURIComponent(targetUrl)}`);
+                        if (response.ok) {
+                            text = await response.text();
+                            addLog(`✅ Successfully fetched HTML! Building frame...`);
+                            break;
+                        } else {
+                            addLog(`⚠️ Failed to fetch via ${bridgeName}: HTTP ${response.status}`);
+                        }
+                    } catch (e) {
+                        addLog(`⚠️ Network error on ${bridgeName}: ${e.message}`);
+                    }
+                }
+
+                tab.panel.innerHTML = "";
+                const iframe = document.createElement("iframe");
+                iframe.className = "game-frame";
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+                iframe.referrerPolicy = "no-referrer";
+                applyMuteToIframe(iframe);
+                iframe.allow = "autoplay 'none'; camera 'none'; microphone 'none'";
+
+                if (!text) {
+                    addLog(`⚠️ All bridges failed. Falling back to standard iframe connection...`, true);
+                    iframe.src = targetUrl; // This will trigger X-Frame-Options errors if the server has them
+                } else {
+                    let html = injectMuteSupport(text, isMuted);
+                    html = injectBaseHref(html, targetUrl);
+                    iframe.srcdoc = html;
+                }
+
+                tab.panel.appendChild(iframe);
+
+            } catch (err) {
+                addLog(`❌ CRITICAL ERROR: ${err.message}`, true);
+                const loadingText = tab.panel.querySelector(`#loading-text-${id}`);
+                if (loadingText) {
+                    loadingText.textContent = `Failed to load ${sanitizeTitle(title)}.`;
+                    loadingText.style.color = "#ff5555";
+                }
+            }
+        }
+
+        function openSelectedProxy() {
+            const selector = document.getElementById('proxy-selector');
+            const url = selector.value;
+            const title = selector.options[selector.selectedIndex].text;
+            const id = "proxy-" + Date.now();
+            const tab = openLoadingTab(id, title);
+            fetchAndInjectProxy(url, tab, title, id);
+        }
+
+        function openSelectedProxyForceIframe() {
+            const selector = document.getElementById('proxy-selector');
+            const url = selector.value;
+            const originalTitle = selector.options[selector.selectedIndex].text;
+            const title = "Force: " + originalTitle;
+            const id = "proxy-force-" + Date.now();
+            const tab = openLoadingTab(id, title);
+
+            tab.panel.innerHTML = "";
+            const iframe = document.createElement("iframe");
+            iframe.className = "game-frame"; iframe.src = url;
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.referrerPolicy = "no-referrer";
+            applyMuteToIframe(iframe);
+            iframe.allow = "autoplay 'none'; camera 'none'; microphone 'none'";
+
+            tab.panel.appendChild(iframe); activateTab(id);
+        }
+
+        function openRandomGame() {
+            if (typeof files !== "undefined" && files.length > 0) {
+                const randomFile = files[Math.floor(Math.random() * files.length)];
+                openGameTab(randomFile);
+            } else {
+                alert("Game list is still loading or empty!");
+            }
+        }
+
+        function openFormTab() {
+            const id = "google-form";
+            const title = "Suggestion Form";
+
+            if (tabs.has(id)) {
+                activateTab(id);
+                return;
+            }
+
+            const tab = openLoadingTab(id, title);
+
+            tab.panel.innerHTML = `
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSea-JfAh1SJ8DrR4AVUNAJfdAgQtYJ07lq-B9bmNaKebKQOlQ/viewform?embedded=true" 
+                class="game-frame" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+            Loading…
+        </iframe>
+    `;
+
+            activateTab(id);
+        }
+
+        document.getElementById("open-form-btn").addEventListener("click", openFormTab);
+
+        function initWhenReady() {
+            if (typeof files === "undefined") {
+                setTimeout(initWhenReady, 50); return;
+            }
+            ensureHomeTab(); ensureMuteButton(); generateAllSections();
+            activateTab("home"); saveMuteAndApply(); document.title = "New tab";
+        }
+        initWhenReady();
+    </script>
+</body>
+
+</html>
