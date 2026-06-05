@@ -1,11 +1,13 @@
 <html>
-  <head>
-    <title>Home - Classroom</title>
-    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsklEQVQYV6WPMY9MYRSGnzO5K5mrsczINCujkBh3ihU1CX9BMSsKtqTQ6mzDr5BFQiLRSkRoFRu7icIQ3YoCESHL3DEbmfMqzjc3d1BxmvPlS97nPK9J4n8mm75Yvsz00zkzYTYPkwypAbJ4e2xkyBuw0LpvPzfaMpURrgMUAIhgBZGBGgGznIzpGMx4OW7xatLGbBYGJJTecoHHu2h+pZ/vgP8gQ4YQw3GbB1+OQgIgkS80kYvR7igBHLkzaImi+Q1kZKEJuJB71WDvnpy1M1dBsPb0BqNJiWpGqSWN6GRJ05ELubiwvEJ33xLdxSVWT5xHVRclw8ilCoY89STwt7fu0V08BMD687thKM1biKhgM3CtwmhScu3xdSRR7pZVuPInDicDknoA+p0eRecY/U4PgOGH12y83WT783aAHDSrIBlAquBcOXmJ00dOUZ+i02Nw/CwPh4+4+exWfMqQjExuYIDC4vdwfQ7v786FEWSoAYiiucPgwDuGb9bnQlVloCw/stJ+T5F/j4MyrHxyUKCw+NsIIK4pbbAAy8gkWwUu2uzSDKT6+jMIINkdU93xH+YXTrImgXmBBtYAAAAASUVORK5CYII=" />
-  </head>
-  <body>
-    <button
-      onclick='fetch("https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/v2.html")
+
+<head>
+  <title>Home - Classroom</title>
+  <link rel="icon" type="image/png" sizes="any"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABq0lEQVR42qWTPWsUURSGn3Mxwk4aNVlJE1kLQZ0UEWsF/QsWG7HQlFrY2plGf4VEBQXBVhDRViGoYDOKXUKKfEBISLKTD5LcN5vD5bILSZUXDvfODO87zzncy2llB3/Gn2h/+T4mgtGnKEABouHbGIjRAIMYYGD4g+3NNGWqMROYyBJIBhiKBjKUCgV/JyuwvR+DMoNqe4i/O03MSGZA8tUrCiK+LxtrjBXrHnbGkxHVVpOPq1fBgGQuBhpu7Ox2UkBE3WoPqxuyAUcBkuGK8o8kDZ4tmLr7DART317S2alRJspdEqTUn0D+B3k9HJ+gdW6U1vlRJm8+cDO5cA+5BR8UbgQB8Ob3+675EgDTP9/hhFI/hcBbMJEJkhz5+ZcXbqh3E34vP4bIBKCeGYyNXKMcue4rQLX4j5m5X8yuzHqI08r6hphaiDy99Zg7V27Tq7Ib1L5xj0/VZ159fw2Qz0VQtJTmFG4+SZcvtPrMPgMUAFE21mkPzVP9n6ZXEll1vcREc4Gy2Mwn1eqvFwUC43gJIBFi+VkizYAwifSIPNxsPEbZmOjC21Nf50P2ER5bit1iLgAAAABJRU5ErkJggg==" />
+</head>
+
+<body>
+  <button onclick='fetch("https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/v2.html")
         .then(response => response.text())
         .then(text => {
           const newWin = window.open("about:blank", "_blank");
@@ -14,11 +16,10 @@
             newWin.document.write(text);
             newWin.document.close();
           }
-        });'
-      style="width: 100%; height: 100%; font-size: 14; font-family: Comic Sans MS;">
-      bookmark this page <br><br>
-      click to open
-    </button>
-  </body>
-</html>
+        });' style="width: 100%; height: 100%; font-size: 14; font-family: Comic Sans MS;">
+    bookmark this page <br><br>
+    click to open
+  </button>
+</body>
 
+</html>

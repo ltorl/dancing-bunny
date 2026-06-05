@@ -139,18 +139,6 @@ https://esm.sh/gh/ltorl/dancing-bunny@55baf2f/clickopen.svg?dev
 https://cdn.statically.io/gh/ltorl/dancing-bunny@main/clickopen.svg?v=0 
 https://rawcdn.githack.com/ltorl/dancing-bunny/main/clickopen.svg 
 https://raw.githack.com/ltorl/dancing-bunny/main/clickopen.svg?t=0 
-https://db-gn.linkyhost.com/ https://classsrooom.vercel.app/ 
-https://dancing-bunny.onrender.com/ 
-https://classsrooom.netlify.app/ 
-https://neon-twilight-f1706e.netlify.app/ 
-https://classrooom.wasmer.app/ 
-https://classroom.nekoweb.org/ 
-https://ltorl.github.io/dancing-bunny/ 
-https://db-gn.w3spaces.com/ 
-https://colossal-sapphire-l6atvx3gpw.edgeone.app/ 
-https://manual-purple-dixuyoxvhc.edgeone.app/ 
-https://db-gn.edgeone.app/ 
-https://square-gray-xziro6jgdf.edgeone.app/ 
 https://raw.githack.com/ltorl/dancing-bunny/main/index.html
 ```
 
