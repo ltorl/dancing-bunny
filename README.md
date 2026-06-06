@@ -29,6 +29,13 @@ The project currently contains access to over **2608 games**.
 ## Demo
 
 https://ltorl.github.io/dancing-bunny/
+
+---
+
+## To open on chromebook go to https://t.ly/db-gn
+
+#### instructions are in link
+
 ---
 
 ## Features
