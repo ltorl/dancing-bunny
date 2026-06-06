@@ -6,6 +6,12 @@ A lightweight browser-based games network with multiple launch methods, tab cloa
 
 ---
 
+# To open on chromebook go to https://t.ly/db-gn
+
+#### instructions are in link
+
+---
+
 ## Overview
 
 Dancing Bunny Games Network (GN-db) is a fully client-side HTML application designed around portability and multiple launch methods.
@@ -32,11 +38,6 @@ https://ltorl.github.io/dancing-bunny/
 
 ---
 
-## To open on chromebook go to https://t.ly/db-gn
-
-#### instructions are in link
-
----
 
 ## Features
 
