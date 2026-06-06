@@ -143,7 +143,7 @@ npm start
 
 ```
 https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/clickopen.svg 
-https://esm.sh/gh/ltorl/dancing-bunny@55baf2f/clickopen.svg?dev 
+https://esm.sh/gh/ltorl/dancing-bunny/clickopen.svg?dev 
 https://cdn.statically.io/gh/ltorl/dancing-bunny@main/clickopen.svg?v=0 
 https://rawcdn.githack.com/ltorl/dancing-bunny/main/clickopen.svg 
 https://raw.githack.com/ltorl/dancing-bunny/main/clickopen.svg?t=0 
