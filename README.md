@@ -6,7 +6,7 @@ A lightweight browser-based games network with multiple launch methods, tab cloa
 
 ---
 
-# To open on chromebook go to https://t.ly/db-gn
+# To open go to https://t.ly/db-gn
 
 #### instructions are in link
 
