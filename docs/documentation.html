@@ -114,10 +114,7 @@ Copy and run the HTML directly:
   <div
     style="background-color: #151b22; padding: 20px 30px; line-height: 200%; font-family: monaco, sans-serif; font-size: 11pt; border-radius: 5px;">
     <h3 style="color: #ffffff; overflow-wrap: break-word;">
-      &lt;button onclick='fetch("https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html")
-      .then(response =&gt; response.text()) .then(text =&gt; { const newWin = window.open("about:blank", "_blank"); if
-      (newWin) { newWin.document.open(); newWin.document.write(text); newWin.document.close(); } });'
-      style="width:100%;height:100%;font-size:14;font-family:Comic Sans MS;"&gt; click to open &lt;/button&gt;
+      &lt;button onclick=&quot; const pDoc = window.parent.document || document; pDoc.title = 'Home - Classroom'; let link = pDoc.querySelector('link[rel~=\'icon\']'); if (!link) { link = pDoc.createElement('link'); pDoc.head.appendChild(link); } link.rel = 'icon'; link.type = 'image/png'; link.sizes = 'any'; link.href = 'https://raw.githubusercontent.com/ltorl/cloaking-icons/refs/heads/main/icons/google-classroom-icon.png'; const newWin = window.open('about:blank', '_blank'); if (newWin) { fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html') .then(response =&gt; response.text()) .then(text =&gt; { const doc = newWin.document; doc.open(); doc.write(text); doc.close(); setTimeout(() =&gt; { const existingIcons = doc.querySelectorAll('link[rel~=\'icon\']'); existingIcons.forEach(oldIcon =&gt; { const newIcon = oldIcon.cloneNode(true); oldIcon.remove(); doc.head.appendChild(newIcon); }); }, 51); }) } &quot; style=&quot;width:100%;height:100%;font-size:16pt;font-family:'Comic Sans MS',sans-serif;&quot; &gt; click to open &lt;/button&gt;
     </h3>
   </div>
 
