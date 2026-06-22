@@ -5,16 +5,14 @@
     <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; font-family: 'Comic Sans MS', sans-serif; box-sizing: border-box;">
       <button 
         onclick="
-          let link = document.querySelector('link[rel~=\'icon\']'); 
-          if (!link) {
-              link = document.createElement('link'); 
-              document.head.appendChild(link); 
-          } 
-      
+          let link = document.createElement('link'); 
+          
           link.rel = 'icon'; 
           link.type = 'image/png';
           link.href = 'broken'; 
-      
+          
+          document.head.appendChild(link); 
+
           const newWin = window.open('about:blank', '_blank');
           
           if (newWin) {
