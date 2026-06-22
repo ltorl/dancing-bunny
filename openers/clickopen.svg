@@ -3,32 +3,46 @@
   <rect width="100%" height="100%" fill="#f9f9f9" rx="10"/>
   <foreignObject x="20" y="20" width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%; display: flex; flex-direction: column; font-family: 'Comic Sans MS', sans-serif; box-sizing: border-box;">
-      <button onclick="
-        const pDoc = window.parent.document || document;
-        pDoc.title = '404 not found'; 
-    
-        let link = pDoc.querySelector('link[rel~=\'icon\']'); 
-        
-        if (!link) {
-            link = pDoc.createElement('link'); 
-            pDoc.head.appendChild(link); 
-        } 
-    
-        link.rel = 'icon'; 
-        link.type = 'image/png';
-        link.href = 'broken';
-    
-        const newWin = window.open('about:blank', '_blank');
-        fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html')
-          .then(response => response.text())
-          .then(text => {
-            if (newWin) {
-              newWin.document.open();
-              newWin.document.write(text);
-              newWin.document.close();
-            }
-          });" style="flex-grow: 1; width: 100%; font-size: 24px; cursor: pointer; padding: 20px; font-family: 'Comic Sans MS', sans-serif;">
-        click to open 
+      <button 
+        onclick="
+          const pDoc = window.parent.document || document;
+          pDoc.title = '404 not found'; 
+      
+          let link = pDoc.querySelector('link[rel~=\'icon\']'); 
+          if (!link) {
+              link = pDoc.createElement('link'); 
+              pDoc.head.appendChild(link); 
+          } 
+      
+          link.rel = 'icon'; 
+          link.type = 'image/png';
+          link.href = 'broken'; 
+      
+          const newWin = window.open('about:blank', '_blank');
+          
+          if (newWin) {
+              fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html')
+                  .then(response => response.text())
+                  .then(text => {
+                      const doc = newWin.document;
+                      doc.open();
+                      doc.write(text);
+                      doc.close();
+                      
+                      setTimeout(() => {
+                          const existingIcons = doc.querySelectorAll('link[rel~=\'icon\']');
+                          existingIcons.forEach(oldIcon => {
+                              const newIcon = oldIcon.cloneNode(true);
+                              oldIcon.remove();
+                              doc.head.appendChild(newIcon);
+                          });
+                      }, 51);
+                  })
+          }
+        "
+        style="width: 100%; height: 100%; font-size: 16pt; font-family: 'Comic Sans MS', sans-serif;"
+      >
+          click to open
       </button>
     </div>
   </foreignObject>
