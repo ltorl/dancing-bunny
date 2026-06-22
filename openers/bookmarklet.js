@@ -1,0 +1,1 @@
+javascript:(function()%7Bfetch(%22https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2Fltorl%2Fdancing-bunny%40main%2Fpublic%2Fv2.html%22).then(response%20%3D%3E%20response.text()).then(text%20%3D%3E%20%7Bconst%20newWin%20%3D%20window.open(%22about%3Ablank%22%2C%20%22_blank%22)%3Bif%20(newWin)%20%7BnewWin.document.open()%3BnewWin.document.write(text)%3BnewWin.document.close()%3B%7D%7D)%7D)()

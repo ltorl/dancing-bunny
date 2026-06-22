@@ -1,14 +1,8 @@
-![Dancing Bunny](animation.svg)
+![Dancing Bunny](other/animation.svg)
 
 # Dancing Bunny Games Network
 
 A lightweight browser-based games network with multiple launch methods, tab cloaking, bookmarklets, Data URI launching, favorites, search, and a multi-tab interface.
-
----
-
-# To open go to https://t.ly/db-gn
-
-#### instructions are in link
 
 ---
 
@@ -34,27 +28,7 @@ The project currently contains access to over **2608 games**.
 
 ## Demo
 
-https://ltorl.github.io/dancing-bunny/
-
----
-
-
-## Features
-
-```text
-• 2608+ browser games
-• Multi-tab system
-• Favorites support
-• Search bar
-• Search scroll button
-• Bookmarklet launcher
-• Data URI launcher
-• Code runner
-• Google Classroom cloaking
-• Mute support
-• Static hosting support
-• Lightweight single-file deployment
-```
+# https://ltorl.github.io/dancing-bunny/
 
 ---
 
@@ -65,7 +39,7 @@ https://ltorl.github.io/dancing-bunny/
 Copy and run the HTML directly:
 
 ```text
-https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/index.html
+https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/public/index.html
 ```
 
 #### Instructions
@@ -84,7 +58,7 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/index.html
 ### Bookmarklet
 
 ```text
-https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/bookmarklet.js
+https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/openers/bookmarklet.js
 ```
 
 #### Instructions
@@ -100,7 +74,7 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/bookmarkle
 ### Data URI
 
 ```text
-https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/datauri
+https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/openers/datauri
 ```
 
 #### Instructions
@@ -110,18 +84,6 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/datauri
 3. Paste into a browser tab
 4. Bookmark
 
----
-## Run Localy
-```
-git clone https://github.com/ltorl/dancing-bunny.git
-cd dancing-bunny
-```
-```
-npm install
-```
-```
-npm start
-```
 ---
 
 ## External Deployment
@@ -142,11 +104,12 @@ npm start
 ## Mirrors
 
 ```
-https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/clickopen.svg 
-https://esm.sh/gh/ltorl/dancing-bunny/clickopen.svg?dev 
-https://cdn.statically.io/gh/ltorl/dancing-bunny@main/clickopen.svg?v=0 
-https://rawcdn.githack.com/ltorl/dancing-bunny/main/clickopen.svg 
-https://raw.githack.com/ltorl/dancing-bunny/main/clickopen.svg?t=0 
+https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/openers/clickopen.svg 
+https://esm.sh/gh/ltorl/dancing-bunny@55baf2f/openers/clickopen.svg?dev 
+https://cdn.statically.io/gh/ltorl/dancing-bunny@main/openers/clickopen.svg?v=0 
+https://rawcdn.githack.com/ltorl/dancing-bunny/main/openers/clickopen.svg 
+https://raw.githack.com/ltorl/dancing-bunny/main/openers/clickopen.svg?t=0 
+https://ltorl.github.io/dancing-bunny/ 
 https://raw.githack.com/ltorl/dancing-bunny/main/index.html
 ```
 
