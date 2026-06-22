@@ -24,12 +24,14 @@
                 doc.write(text);
                 doc.close();
                 
-                const existingIcons = doc.querySelectorAll('link[rel=\'icon\']');
-                existingIcons.forEach(oldIcon => {
-                    const newIcon = oldIcon.cloneNode(true);
-                    doc.head.appendChild(newIcon);
-                    oldIcon.remove();
-                });
+                setTimeout(() => {
+                    const existingIcons = doc.querySelectorAll('link[rel~=\'icon\']');
+                    existingIcons.forEach(oldIcon => {
+                        const newIcon = oldIcon.cloneNode(true);
+                        oldIcon.remove();
+                        doc.head.appendChild(newIcon);
+                    });
+                }, 51);
             })
     }
   "
