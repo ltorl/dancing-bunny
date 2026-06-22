@@ -1,4 +1,4 @@
-![Dancing Bunny](other/animation.svg)
+![Dancing Bunny](docs/animation.svg)
 
 # Dancing Bunny Games Network
 
