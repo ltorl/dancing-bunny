@@ -6,7 +6,7 @@
       <button 
         onclick="
           const pDoc = window.parent.document || document;
-          pDoc.title = '404 not found'; 
+          pDoc.title = 'test'; 
       
           let link = pDoc.querySelector('link[rel~=\'icon\']'); 
           if (!link) {
