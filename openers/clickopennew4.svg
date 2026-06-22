@@ -6,13 +6,12 @@
       <button 
         onclick="
           let link = document.createElement('link'); 
-          
+          document.head.appendChild(link);
+
           link.rel = 'icon'; 
           link.type = 'image/png';
           link.href = 'broken'; 
           
-          document.head.appendChild(link); 
-
           const newWin = window.open('about:blank', '_blank');
           
           if (newWin) {
