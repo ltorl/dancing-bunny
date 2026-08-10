@@ -607,7 +607,7 @@
                 <h2 class="subheading">
                     Documentation:
                     <button id="doc-btn" onclick="
-                        fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/docs/documentation.html')
+                        fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/docs/documentation.html')
                         .then(response => response.text())
                         .then(text => {
                             const newWin = window.open('about:blank', '_blank');
@@ -676,15 +676,15 @@
         }, 51);
     </script>
 
-    <script src="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/gamelist.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/public/gamelist.js"></script>
 
     <script>
         const GAME_BASES = [
-            "https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@main/UGS-Files/",
+            "https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile@latest/UGS-Files/",
             "https://api.codetabs.com/v1/proxy/?quest=https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
             "https://corsproxy.io/?https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
             "https://api.allorigins.win/raw?url=https://raw.githubusercontent.com/bubbls/ugs-singlefile/main/UGS-Files/",
-            "https://esm.sh/gh/bubbls/ugs-singlefile@main/UGS-Files/",
+            "https://esm.sh/gh/bubbls/ugs-singlefile@latest/UGS-Files/",
             "https://cdn.statically.io/gh/bubbls/ugs-singlefile/main/UGS-Files/",
             "https://rawcdn.githack.com/bubbls/ugs-singlefile/main/UGS-Files/"
         ];

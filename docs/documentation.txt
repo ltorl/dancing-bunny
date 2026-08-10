@@ -20,7 +20,7 @@ Instructions
 HTML
 Copy and run the HTML directly:
 
-<button onclick='fetch("https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html") .then(response => response.text()) .then(text => { const newWin = window.open("about:blank", "_blank"); if (newWin) { newWin.document.open(); newWin.document.write(text); newWin.document.close(); } });' style="width:100%;height:100%;font-size:14;font-family:Comic Sans MS;"> click to open </button>
+<button onclick='fetch("https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/public/v2.html") .then(response => response.text()) .then(text => { const newWin = window.open("about:blank", "_blank"); if (newWin) { newWin.document.open(); newWin.document.write(text); newWin.document.close(); } });' style="width:100%;height:100%;font-size:14;font-family:Comic Sans MS;"> click to open </button>
 
 Instructions
     Copy Html (triple click)
@@ -46,7 +46,7 @@ Instructions
 
 Mirrors
 
-https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/clickopen.svg
+https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/clickopen.svg
 https://esm.sh/gh/ltorl/dancing-bunny@55baf2f/clickopen.svg?dev
 https://cdn.statically.io/gh/ltorl/dancing-bunny@main/clickopen.svg?v=0
 https://rawcdn.githack.com/ltorl/dancing-bunny/main/clickopen.svg

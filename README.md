@@ -104,7 +104,7 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/openers/da
 ## Mirrors
 
 ```
-https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/openers/clickopen.svg 
+https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/openers/clickopen.svg 
 https://esm.sh/gh/ltorl/dancing-bunny@55baf2f/openers/clickopen.svg?dev 
 https://cdn.statically.io/gh/ltorl/dancing-bunny@main/openers/clickopen.svg?v=0 
 https://rawcdn.githack.com/ltorl/dancing-bunny/main/openers/clickopen.svg 
