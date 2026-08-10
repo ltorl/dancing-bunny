@@ -1,0 +1,9 @@
+<script>
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "`" && !event.repeat) {
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/openers/starrt.js";
+            document.head.appendChild(script);
+        }
+    });
+</script>
