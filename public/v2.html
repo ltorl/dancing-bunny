@@ -665,6 +665,17 @@
         </div>
     </div>
 
+    <script>
+        setTimeout(() => {
+            const existingIcons = document.querySelectorAll('link[rel=\'icon\']');
+            existingIcons.forEach(oldIcon => {
+                const newIcon = oldIcon.cloneNode(true);
+                oldIcon.remove();
+                document.head.appendChild(newIcon);
+            });
+        }, 51);
+    </script>
+
     <script src="https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/gamelist.js"></script>
 
     <script>
