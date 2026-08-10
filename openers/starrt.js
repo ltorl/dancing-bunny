@@ -1,6 +1,6 @@
 const newWin = window.open('about:blank', '_blank');
 if (newWin) {
-	fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@main/public/v2.html')
+	fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/public/v2.html')
 		.then(response => response.text())
 		.then(text => {
 			const doc = newWin.document;
