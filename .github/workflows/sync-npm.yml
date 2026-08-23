@@ -1,0 +1,47 @@
+name: Sync npm → GitHub
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get latest npm version
+        id: npm
+        run: |
+          VERSION=$(npm view db-gn version)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Download db-gn
+        run: |
+          npm pack db-gn@${{ steps.npm.outputs.version }}
+          mkdir package
+          tar -xzf db-gn-*.tgz -C package --strip-components=1
+
+      - name: Sync package to repository
+        run: |
+          rsync -a --delete package/ ./ --exclude='.git'
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "GitHub is already synced with npm"
+            exit 0
+          fi
+
+          git commit -m "Sync with db-gn ${{ steps.npm.outputs.version }}"
+          git push
