@@ -1669,7 +1669,6 @@
                 closeAutoclickMenu();
             });
             window.addEventListener("resize", closeAutoclickMenu);
-            window.addEventListener("blur", closeAutoclickMenu);
 
             return menu;
         }
@@ -1796,8 +1795,10 @@
             text.className = "ac-all-label";
             text.textContent = label;
 
-            const allOn = clickers.length > 0 && clickers.every(c => c.enabled);
-            const sw = makeAutoclickSwitch(allOn, `Turn all ${label.toLowerCase()} ${allOn ? "off" : "on"}`, (on) => {
+            // On as soon as anything in the group is on, so one click always
+            // turns the whole group off rather than first switching it all on.
+            const anyOn = clickers.some(c => c.enabled);
+            const sw = makeAutoclickSwitch(anyOn, `Turn all ${label.toLowerCase()} ${anyOn ? "off" : "on"}`, (on) => {
                 clickers.forEach(c => setClickerEnabled(c, on));
                 renderAutoclickMenu();
             }, clickers.length === 0);
