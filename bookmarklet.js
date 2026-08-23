@@ -1,0 +1,1 @@
+javascript:(()=>{document.body.innerHTML='<iframe src="https://cdn.jsdelivr.net/npm/db-gn@latest/index.svg" style="width:100%;height:100%;border:0"></iframe>'})()
