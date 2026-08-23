@@ -82,6 +82,20 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/bookmarkle
 
 ---
 
+### Data URi
+
+```text
+https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/datauri.txt
+```
+
+#### Instructions
+
+1. Open the data URi source
+2. Copy the link
+4. Paste into URL bar
+
+---
+
 ## License
 
 Licensed under the GNU General Public License v3.0.
