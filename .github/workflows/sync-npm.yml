@@ -8,30 +8,41 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Get latest npm version
         id: npm
         run: |
           VERSION=$(npm view db-gn version)
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Latest db-gn version: $VERSION"
 
-      - name: Download db-gn
+      - name: Download npm package
         run: |
+          mkdir -p "$RUNNER_TEMP/npm-package"
+          cd "$RUNNER_TEMP/npm-package"
+
           npm pack db-gn@${{ steps.npm.outputs.version }}
-          mkdir package
-          tar -xzf db-gn-*.tgz -C package --strip-components=1
 
-      - name: Sync package to repository
+          tar -xzf db-gn-*.tgz --strip-components=1
+          rm db-gn-*.tgz
+
+      - name: Sync npm package to repository
         run: |
-          rsync -a --delete package/ ./ --exclude='.git'
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            "$RUNNER_TEMP/npm-package/" ./
 
-      - name: Commit and push
+      - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -39,7 +50,7 @@ jobs:
           git add -A
 
           if git diff --cached --quiet; then
-            echo "GitHub is already synced with npm"
+            echo "GitHub is already synchronized with npm."
             exit 0
           fi
 
