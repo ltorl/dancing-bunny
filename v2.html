@@ -257,6 +257,219 @@
             cursor: not-allowed;
         }
 
+        #autoclick-menu {
+            position: fixed;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 240px;
+            max-width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 6px;
+            background: rgba(30, 26, 46, 0.97);
+            border: 2px solid rgba(176, 0, 230, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        #autoclick-menu.open {
+            display: flex;
+        }
+
+        #autoclick-menu .ac-item {
+            appearance: none;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 15px;
+            text-align: left;
+            color: #fff;
+            padding: 9px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        #autoclick-menu .ac-item:hover:not(:disabled),
+        #autoclick-menu .ac-item:focus-visible {
+            background: rgba(176, 0, 230, 0.35);
+            outline: none;
+        }
+
+        #autoclick-menu .ac-item:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        #autoclick-menu .ac-new {
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px 6px 0 0;
+        }
+
+        #autoclick-menu .ac-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        #autoclick-menu .ac-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 4px 2px 0;
+        }
+
+        #autoclick-menu .ac-row.off .ac-name,
+        #autoclick-menu .ac-row.off .ac-loc {
+            opacity: 0.45;
+        }
+
+        #autoclick-menu .ac-name {
+            flex: 1;
+            appearance: none;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 15px;
+            text-align: left;
+            color: #fff;
+            padding: 7px 8px;
+            border-radius: 6px;
+            cursor: text;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #autoclick-menu .ac-name:hover,
+        #autoclick-menu .ac-name:focus-visible {
+            background: rgba(176, 0, 230, 0.35);
+            outline: none;
+        }
+
+        #autoclick-menu .ac-name-input {
+            flex: 1;
+            min-width: 0;
+            font-family: inherit;
+            font-size: 15px;
+            color: #fff;
+            padding: 6px 7px;
+            border-radius: 6px;
+            border: 1px solid rgba(176, 0, 230, 0.7);
+            background: rgba(0, 0, 0, 0.35);
+            outline: none;
+        }
+
+        #autoclick-menu .ac-loc {
+            flex: none;
+            appearance: none;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 4px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #autoclick-menu .ac-loc:hover {
+            background: rgba(176, 0, 230, 0.35);
+            color: #fff;
+        }
+
+        #autoclick-menu .ac-all {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 2px;
+            padding-bottom: 6px;
+        }
+
+        #autoclick-menu .ac-all-label {
+            flex: 1;
+            padding: 4px 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        #autoclick-menu .ac-switch {
+            flex: none;
+            appearance: none;
+            border: 0;
+            width: 34px;
+            height: 18px;
+            padding: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.15s ease;
+        }
+
+        #autoclick-menu .ac-switch.on {
+            background: rgba(0, 220, 120, 0.85);
+        }
+
+        #autoclick-menu .ac-switch:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        #autoclick-menu .ac-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.15s ease;
+        }
+
+        #autoclick-menu .ac-switch.on .ac-knob {
+            transform: translateX(16px);
+        }
+
+        #autoclick-menu .ac-remove {
+            appearance: none;
+            border: 0;
+            background: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: inherit;
+            font-size: 18px;
+            line-height: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #autoclick-menu .ac-remove:hover {
+            background: rgba(255, 60, 60, 0.3);
+            color: #fff;
+        }
+
+        #autoclick-menu .ac-group {
+            padding: 8px 10px 2px;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(214, 140, 255, 0.9);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #autoclick-menu .ac-empty {
+            padding: 9px 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
         .autoclick-overlay {
             position: absolute;
             inset: 0;
@@ -290,6 +503,14 @@
             box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.45);
             pointer-events: none;
             z-index: 51;
+        }
+
+        .autoclick-marker.paused {
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+
+        .autoclick-marker.paused::after {
+            background: rgba(255, 255, 255, 0.55);
         }
 
         .autoclick-marker::after {
@@ -777,6 +998,24 @@
             background: #006094;
         }
 
+        .runner-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .runner-check input {
+            width: 16px;
+            height: 16px;
+            accent-color: #03a5fc;
+            cursor: pointer;
+        }
+
         .runner-frame {
             width: 100%;
             height: 100%;
@@ -1036,9 +1275,9 @@
             btn.id = "autoclick-btn";
             btn.type = "button";
             btn.innerHTML = ICON_AUTOCLICK;
-            btn.title = "Auto Clicker";
-            btn.setAttribute("aria-label", "Auto Clicker");
-            btn.onclick = toggleAutoclick;
+            btn.title = "Auto Clickers";
+            btn.setAttribute("aria-label", "Auto Clickers");
+            btn.onclick = toggleAutoclickMenu;
             tabBar.appendChild(btn);
         }
 
@@ -1159,7 +1398,64 @@
 
         const AUTOCLICK_INTERVAL_MS = 1;
 
-        const autoclickers = new Map(); // tab id -> clicker state
+        // clicker id -> clicker state. A tab can hold any number of them.
+        const autoclickers = new Map();
+        let autoclickSeq = 0;
+
+        /* Placed clickers survive closing a game: tab id -> [{ name, x, y }].
+           Only the spots are kept, never the on/off state, so a reopened game
+           always comes back with every clicker switched off. */
+        const CLICKERS_KEY = "dancing-bunny-clickers-v1";
+        let savedClickers = {};
+        try {
+            const parsed = JSON.parse(localStorage.getItem(CLICKERS_KEY) || "{}");
+            if (parsed && typeof parsed === "object") savedClickers = parsed;
+        } catch (e) { savedClickers = {}; }
+
+        function persistClickers() {
+            try { localStorage.setItem(CLICKERS_KEY, JSON.stringify(savedClickers)); } catch (e) { }
+        }
+
+        function saveClickersForTab(tabId) {
+            if (!tabId) return;
+            const placed = clickersForTab(tabId)
+                .filter(c => c.mode === "running")
+                .map(c => ({ name: c.name, x: c.x, y: c.y }));
+            if (placed.length) savedClickers[tabId] = placed;
+            else delete savedClickers[tabId];
+            persistClickers();
+        }
+
+        /* Rebuilds a game's saved clickers onto a freshly loaded iframe. They
+           come back parked (off) with their markers in place. */
+        function restoreClickersForTab(tabId, panel, iframe) {
+            const saved = savedClickers[tabId];
+            if (!Array.isArray(saved) || saved.length === 0) return;
+
+            saved.forEach((entry, i) => {
+                if (!entry || typeof entry.x !== "number" || typeof entry.y !== "number") return;
+                const clicker = {
+                    id: `ac-${++autoclickSeq}`,
+                    tabId,
+                    name: entry.name || `Clicker ${i + 1}`,
+                    enabled: false,
+                    panel,
+                    iframe,
+                    overlay: null,
+                    marker: null,
+                    timer: null,
+                    x: entry.x,
+                    y: entry.y,
+                    mode: "running"
+                };
+                autoclickers.set(clicker.id, clicker);
+                clicker.fire = makeClickerFire(clicker);
+                placeClickerMarker(clicker);
+            });
+
+            setAutoclickButtonState();
+            refreshAutoclickMenu();
+        }
 
         function panelTabId(panel) {
             if (!panel || !panel.id.startsWith("panel-")) return null;
@@ -1173,41 +1469,46 @@
             return iframe ? { id: panelTabId(panel), panel, iframe } : null;
         }
 
-        function currentAutoclicker() {
+        function clickersForTab(tabId) {
+            return [...autoclickers.values()].filter(c => c.tabId === tabId);
+        }
+
+        function currentAutoclickers() {
             const target = activeGamePanel();
-            return target ? autoclickers.get(target.id) || null : null;
+            return target ? clickersForTab(target.id) : [];
         }
 
         function runningAutoclickCount() {
             let count = 0;
-            autoclickers.forEach(c => { if (c.mode === "running") count++; });
+            autoclickers.forEach(c => { if (c.mode === "running" && c.enabled) count++; });
             return count;
         }
 
         function setAutoclickButtonState() {
             const btn = document.getElementById("autoclick-btn");
             if (!btn) return;
-            const current = currentAutoclicker();
-            const mode = current ? current.mode : "off";
-            const elsewhere = runningAutoclickCount() - (mode === "running" ? 1 : 0);
+            const mine = currentAutoclickers();
+            const arming = mine.some(c => c.mode === "arming");
+            const runningHere = mine.filter(c => c.mode === "running" && c.enabled).length;
+            const elsewhere = runningAutoclickCount() - runningHere;
 
-            btn.classList.toggle("arming", mode === "arming");
-            btn.classList.toggle("running", mode === "running");
+            btn.classList.toggle("arming", arming);
+            btn.classList.toggle("running", runningHere > 0);
 
             let title =
-                mode === "arming" ? "Auto Clicker: pick a spot (Esc to cancel)" :
-                    mode === "running" ? "Auto Clicker: running on this tab (click to stop)" :
-                        "Auto Clicker";
+                arming ? "Auto Clicker: pick a spot (Esc to cancel)" :
+                    runningHere > 0 ? `Auto Clickers: ${runningHere} running on this tab` :
+                        "Auto Clickers";
             if (elsewhere > 0) {
-                title += ` \u2027 ${elsewhere} running in background`;
+                title += ` ‧ ${elsewhere} running in background`;
             }
             btn.title = title;
             btn.setAttribute("aria-label", title);
-            btn.setAttribute("aria-pressed", mode !== "off" ? "true" : "false");
-            btn.classList.toggle("background-active", mode === "off" && elsewhere > 0);
+            btn.setAttribute("aria-pressed", (arming || runningHere > 0) ? "true" : "false");
+            btn.classList.toggle("background-active", runningHere === 0 && !arming && elsewhere > 0);
         }
 
-        function stopAutoclick(clicker = currentAutoclicker()) {
+        function stopAutoclick(clicker, opts = {}) {
             if (!clicker) return;
             if (clicker.timer) clearInterval(clicker.timer);
             clicker.timer = null;
@@ -1217,18 +1518,21 @@
             clicker.marker = null;
             clicker.mode = "off";
             autoclickers.delete(clicker.id);
+            // Closing a tab tears its clickers down but must not forget them.
+            if (!opts.keepSaved) saveClickersForTab(clicker.tabId);
             setAutoclickButtonState();
+            refreshAutoclickMenu();
         }
 
         function stopAutoclickForPanel(panel) {
             const id = panelTabId(panel);
-            const clicker = id ? autoclickers.get(id) : null;
-            if (clicker) stopAutoclick(clicker);
+            if (!id) return;
+            clickersForTab(id).forEach(c => stopAutoclick(c, { keepSaved: true }));
         }
 
         // A picker that never got a spot shouldn't linger on a tab you left.
         function cancelArmingAutoclickers() {
-            autoclickers.forEach(clicker => {
+            [...autoclickers.values()].forEach(clicker => {
                 if (clicker.mode === "arming") stopAutoclick(clicker);
             });
         }
@@ -1246,7 +1550,10 @@
             }
 
             const clicker = {
-                id: target.id,
+                id: `ac-${++autoclickSeq}`,
+                tabId: target.id,
+                name: `Clicker ${clickersForTab(target.id).length + 1}`,
+                enabled: true,
                 panel: target.panel,
                 iframe: target.iframe,
                 overlay: null,
@@ -1260,7 +1567,7 @@
 
             const overlay = document.createElement("div");
             overlay.className = "autoclick-overlay";
-            overlay.innerHTML = `<div class="autoclick-hint">Click a spot to auto-click \u2027 Esc to cancel</div>`;
+            overlay.innerHTML = `<div class="autoclick-hint">Click a spot to auto-click ‧ Esc to cancel</div>`;
             overlay.addEventListener("click", (e) => {
                 const rect = clicker.iframe.getBoundingClientRect();
                 startAutoclick(clicker, e.clientX - rect.left, e.clientY - rect.top);
@@ -1272,6 +1579,38 @@
             setAutoclickButtonState();
         }
 
+        function makeClickerFire(clicker) {
+            return () => {
+                const frame = clicker.iframe;
+                // The game was closed or reloaded out from under us.
+                if (!frame || !frame.isConnected) { stopAutoclick(clicker, { keepSaved: true }); return; }
+                try {
+                    frame.contentWindow?.postMessage(
+                        { type: "AUTO_CLICK", x: clicker.x, y: clicker.y }, "*"
+                    );
+                } catch (e) { }
+            };
+        }
+
+        function placeClickerMarker(clicker) {
+            clicker.marker?.remove();
+            const marker = document.createElement("div");
+            marker.className = "autoclick-marker";
+            marker.classList.toggle("paused", !clicker.enabled);
+
+            // A hidden panel measures as 0x0; the frame fills the panel anyway,
+            // so fall back to the raw coordinates.
+            const rect = clicker.iframe.getBoundingClientRect();
+            const panelRect = clicker.panel.getBoundingClientRect();
+            const offsetX = rect.width ? rect.left - panelRect.left : 0;
+            const offsetY = rect.height ? rect.top - panelRect.top : 0;
+            marker.style.left = `${offsetX + clicker.x}px`;
+            marker.style.top = `${offsetY + clicker.y}px`;
+
+            clicker.marker = marker;
+            clicker.panel.appendChild(marker);
+        }
+
         function startAutoclick(clicker, x, y) {
             clicker.overlay?.remove();
             clicker.overlay = null;
@@ -1279,39 +1618,294 @@
             clicker.y = y;
             clicker.mode = "running";
 
-            const marker = document.createElement("div");
-            marker.className = "autoclick-marker";
-            const rect = clicker.iframe.getBoundingClientRect();
-            const panelRect = clicker.panel.getBoundingClientRect();
-            marker.style.left = `${rect.left - panelRect.left + x}px`;
-            marker.style.top = `${rect.top - panelRect.top + y}px`;
-            clicker.marker = marker;
-            clicker.panel.appendChild(marker);
+            placeClickerMarker(clicker);
+            clicker.fire = makeClickerFire(clicker);
 
-            const fire = () => {
-                const frame = clicker.iframe;
-                // The game was closed or reloaded out from under us.
-                if (!frame || !frame.isConnected) { stopAutoclick(clicker); return; }
-                try {
-                    frame.contentWindow?.postMessage(
-                        { type: "AUTO_CLICK", x: clicker.x, y: clicker.y }, "*"
-                    );
-                } catch (e) { }
-            };
+            if (clicker.enabled) {
+                clicker.fire();
+                clicker.timer = setInterval(clicker.fire, AUTOCLICK_INTERVAL_MS);
+            }
+            saveClickersForTab(clicker.tabId);
+            setAutoclickButtonState();
+            refreshAutoclickMenu();
+        }
 
-            fire();
-            clicker.timer = setInterval(fire, AUTOCLICK_INTERVAL_MS);
+        /* Switching a clicker off parks it: the spot is kept, only the firing
+           stops, so it can be switched back on without picking again. */
+        function setClickerEnabled(clicker, enabled) {
+            if (!clicker || clicker.enabled === enabled) return;
+            clicker.enabled = enabled;
+
+            if (!enabled) {
+                if (clicker.timer) clearInterval(clicker.timer);
+                clicker.timer = null;
+            } else if (clicker.mode === "running" && !clicker.timer && clicker.fire) {
+                clicker.fire();
+                clicker.timer = setInterval(clicker.fire, AUTOCLICK_INTERVAL_MS);
+            }
+
+            clicker.marker?.classList.toggle("paused", !enabled);
             setAutoclickButtonState();
         }
 
-        function toggleAutoclick() {
-            const current = currentAutoclicker();
-            if (current) stopAutoclick(current);
-            else armAutoclick();
+        /* ---------------- Auto clicker menu ----------------
+           The toolbar button opens a list: a "New Auto Clicker" action on top,
+           then the clickers themselves. On a game tab only that game's clickers
+           are listed; on the home tab every clicker is listed under its game. */
+
+        function ensureAutoclickMenu() {
+            let menu = document.getElementById("autoclick-menu");
+            if (menu) return menu;
+
+            menu = document.createElement("div");
+            menu.id = "autoclick-menu";
+            menu.setAttribute("role", "menu");
+            document.body.appendChild(menu);
+
+            document.addEventListener("mousedown", (e) => {
+                if (!isAutoclickMenuOpen()) return;
+                if (menu.contains(e.target)) return;
+                if (e.target.closest("#autoclick-btn")) return;
+                closeAutoclickMenu();
+            });
+            window.addEventListener("resize", closeAutoclickMenu);
+            window.addEventListener("blur", closeAutoclickMenu);
+
+            return menu;
+        }
+
+        function isAutoclickMenuOpen() {
+            return !!document.getElementById("autoclick-menu")?.classList.contains("open");
+        }
+
+        function closeAutoclickMenu() {
+            document.getElementById("autoclick-menu")?.classList.remove("open");
+        }
+
+        function clickerLocationLabel(clicker) {
+            if (clicker.mode === "arming") return "picking a spot…";
+            return `${Math.round(clicker.x)}, ${Math.round(clicker.y)}`;
+        }
+
+        function tabTitleFor(tabId) {
+            return tabs.get(tabId)?.title || "Game";
+        }
+
+        /* A small on/off switch. `state` is the current value; `onToggle` gets
+           the value it was flipped to. */
+        function makeAutoclickSwitch(state, label, onToggle, disabled = false) {
+            const sw = document.createElement("button");
+            sw.type = "button";
+            sw.className = "ac-switch";
+            sw.setAttribute("role", "switch");
+            sw.setAttribute("aria-checked", state ? "true" : "false");
+            sw.setAttribute("aria-label", label);
+            sw.title = label;
+            sw.classList.toggle("on", !!state);
+            sw.disabled = disabled;
+            sw.innerHTML = `<span class="ac-knob"></span>`;
+            sw.onclick = () => { onToggle(!state); };
+            return sw;
+        }
+
+        /* Clicking a clicker's name swaps it for a text field. Enter or blur
+           commits, Escape puts the old name back. */
+        function startClickerRename(clicker, nameBtn) {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.className = "ac-name-input";
+            input.value = clicker.name;
+            input.maxLength = 40;
+
+            let done = false;
+            const finish = (save) => {
+                if (done) return;
+                done = true;
+                if (save) {
+                    const next = input.value.replace(/\s+/g, " ").trim();
+                    if (next && next !== clicker.name) {
+                        clicker.name = next;
+                        saveClickersForTab(clicker.tabId);
+                    }
+                }
+                nameBtn.textContent = clicker.name;
+                input.replaceWith(nameBtn);
+            };
+
+            input.addEventListener("keydown", (e) => {
+                e.stopPropagation();
+                if (e.key === "Enter") { e.preventDefault(); finish(true); }
+                else if (e.key === "Escape") { e.preventDefault(); finish(false); }
+            });
+            input.addEventListener("blur", () => finish(true));
+
+            nameBtn.replaceWith(input);
+            input.focus();
+            input.select();
+        }
+
+        function makeAutoclickRow(clicker) {
+            const row = document.createElement("div");
+            row.className = "ac-row";
+            row.classList.toggle("off", !clicker.enabled);
+
+            const nameBtn = document.createElement("button");
+            nameBtn.type = "button";
+            nameBtn.className = "ac-name";
+            nameBtn.textContent = clicker.name;
+            nameBtn.title = "Click to rename";
+            nameBtn.onclick = () => startClickerRename(clicker, nameBtn);
+
+            const loc = document.createElement("button");
+            loc.type = "button";
+            loc.className = "ac-loc";
+            loc.textContent = clickerLocationLabel(clicker);
+            loc.title = "Go to this clicker's tab";
+            loc.onclick = () => {
+                closeAutoclickMenu();
+                if (tabs.has(clicker.tabId)) activateTab(clicker.tabId);
+            };
+
+            const sw = makeAutoclickSwitch(clicker.enabled, `Turn ${clicker.name} ${clicker.enabled ? "off" : "on"}`, (on) => {
+                setClickerEnabled(clicker, on);
+                renderAutoclickMenu();
+            });
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "ac-remove";
+            remove.textContent = "×";
+            remove.title = "Delete this auto clicker";
+            remove.setAttribute("aria-label", "Delete this auto clicker");
+            remove.onclick = () => { stopAutoclick(clicker); };
+
+            row.appendChild(nameBtn);
+            row.appendChild(loc);
+            row.appendChild(sw);
+            row.appendChild(remove);
+            return row;
+        }
+
+        /* The "all of this game's clickers" switch: on only when every clicker
+           in the group is on. */
+        function makeAutoclickAllRow(label, clickers) {
+            const row = document.createElement("div");
+            row.className = "ac-row ac-all";
+
+            const text = document.createElement("span");
+            text.className = "ac-all-label";
+            text.textContent = label;
+
+            const allOn = clickers.length > 0 && clickers.every(c => c.enabled);
+            const sw = makeAutoclickSwitch(allOn, `Turn all ${label.toLowerCase()} ${allOn ? "off" : "on"}`, (on) => {
+                clickers.forEach(c => setClickerEnabled(c, on));
+                renderAutoclickMenu();
+            }, clickers.length === 0);
+
+            row.appendChild(text);
+            row.appendChild(sw);
+            return row;
+        }
+
+        function renderAutoclickMenu() {
+            const menu = ensureAutoclickMenu();
+            menu.innerHTML = "";
+
+            const target = activeGamePanel();
+
+            const newBtn = document.createElement("button");
+            newBtn.type = "button";
+            newBtn.className = "ac-item ac-new";
+            newBtn.textContent = "New Auto Clicker";
+            if (target) {
+                newBtn.onclick = () => { closeAutoclickMenu(); armAutoclick(); };
+            } else {
+                newBtn.disabled = true;
+                newBtn.title = "Open a game tab first";
+            }
+            menu.appendChild(newBtn);
+
+            const list = document.createElement("div");
+            list.className = "ac-list";
+
+            if (target) {
+                // On a game tab: just this game's clickers, with a master switch.
+                const mine = clickersForTab(target.id);
+                list.appendChild(makeAutoclickAllRow("All Clickers", mine));
+                if (mine.length === 0) {
+                    list.appendChild(makeAutoclickEmpty("No auto clickers on this game."));
+                } else {
+                    mine.forEach(clicker => list.appendChild(makeAutoclickRow(clicker)));
+                }
+            } else {
+                // On the home tab: everything, grouped under its game's name,
+                // each group with its own master switch.
+                const byTab = new Map();
+                autoclickers.forEach(clicker => {
+                    if (!byTab.has(clicker.tabId)) byTab.set(clicker.tabId, []);
+                    byTab.get(clicker.tabId).push(clicker);
+                });
+
+                if (byTab.size === 0) {
+                    list.appendChild(makeAutoclickEmpty("No auto clickers running."));
+                } else {
+                    byTab.forEach((clickers, tabId) => {
+                        const header = document.createElement("div");
+                        header.className = "ac-group";
+                        header.textContent = tabTitleFor(tabId);
+                        list.appendChild(header);
+                        list.appendChild(makeAutoclickAllRow("All", clickers));
+                        clickers.forEach(clicker => list.appendChild(makeAutoclickRow(clicker)));
+                    });
+                }
+            }
+
+            menu.appendChild(list);
+        }
+
+        /* Live updates skip the redraw while a name is being typed. */
+        function refreshAutoclickMenu() {
+            const menu = document.getElementById("autoclick-menu");
+            if (!menu || !menu.classList.contains("open")) return;
+            if (menu.querySelector(".ac-name-input")) return;
+            renderAutoclickMenu();
+        }
+
+        function makeAutoclickEmpty(text) {
+            const empty = document.createElement("div");
+            empty.className = "ac-empty";
+            empty.textContent = text;
+            return empty;
+        }
+
+        function openAutoclickMenu() {
+            const btn = document.getElementById("autoclick-btn");
+            const menu = ensureAutoclickMenu();
+            renderAutoclickMenu();
+            menu.classList.add("open");
+
+            if (!btn) return;
+            const anchor = btn.getBoundingClientRect();
+            const rect = menu.getBoundingClientRect();
+            const margin = 8;
+            let left = anchor.right - rect.width;
+            let top = anchor.bottom + 6;
+            left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin));
+            top = Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin));
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+        }
+
+        function toggleAutoclickMenu() {
+            if (isAutoclickMenuOpen()) closeAutoclickMenu();
+            else openAutoclickMenu();
         }
 
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") stopAutoclick();
+            if (e.key !== "Escape") return;
+            if (document.activeElement?.classList.contains("ac-name-input")) return;
+            closeAutoclickMenu();
+            cancelArmingAutoclickers();
         });
 
         (function protectTabIdentity() {
@@ -1421,6 +2015,7 @@
 
         function activateTab(id) {
             setTabStatus(id, null);
+            closeAutoclickMenu();
             cancelArmingAutoclickers();
             setActiveTabButton(id);
             setActivePanel(id);
@@ -2088,6 +2683,7 @@ ${icons}
                 iframe.referrerPolicy = "no-referrer";
                 applyMuteToIframe(iframe);
                 tab.panel.appendChild(iframe);
+                restoreClickersForTab(id, tab.panel, iframe);
                 setTabStatus(id, isTabActive(id) ? null : "ready");
 
             } catch (err) {
@@ -2101,14 +2697,119 @@ ${icons}
             }
         }
 
+        /* Pulls the text of the code's own <title> tag, entities decoded. */
+        function extractDocTitle(htmlCode) {
+            const match = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(htmlCode || "");
+            if (!match) return "";
+            const decoder = document.createElement("textarea");
+            decoder.innerHTML = match[1];
+            return decoder.value.replace(/\s+/g, " ").trim();
+        }
+
+        function escapeHtmlText(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        /* The home tab's own favicon links, as markup. */
+        function homeIconsHtml() {
+            return [...document.querySelectorAll("link[rel='icon']")].map(l => l.outerHTML).join("\n");
+        }
+
+        /* Icon links declared in the code. Relative hrefs are dropped: the popup
+           lives on about:blank, so they would resolve to nothing. */
+        function extractIconLinksHtml(htmlCode) {
+            const links = [];
+            const tagPattern = /<link\b[^>]*>/gi;
+            let tag;
+            while ((tag = tagPattern.exec(htmlCode || "")) !== null) {
+                const text = tag[0];
+                const rel = /\brel\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(text);
+                const relValue = rel ? (rel[2] ?? rel[3] ?? rel[4] ?? "") : "";
+                if (!/\bicon\b/i.test(relValue)) continue;
+                const href = /\bhref\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(text);
+                const hrefValue = href ? (href[2] ?? href[3] ?? href[4] ?? "").trim() : "";
+                if (!/^(data:|https?:|\/\/)/i.test(hrefValue)) continue;
+                links.push(text);
+            }
+            return links.join("\n");
+        }
+
+        /* Runs the typed HTML in a real browser tab. With cloaking on (or when the
+           code declares no title/icon of its own) the tab wears the home page's
+           title and favicon instead. */
+        function openHtmlInNewWindow(htmlCode, keepCloaking) {
+            const win = window.open("about:blank", "_blank");
+            if (!win) {
+                alert("The popup was blocked. Allow popups for this page to open code in a new tab.");
+                return;
+            }
+
+            const codeTitle = keepCloaking ? "" : extractDocTitle(htmlCode);
+            const codeIcons = keepCloaking ? "" : extractIconLinksHtml(htmlCode);
+            const title = codeTitle || "New tab";
+            const icons = codeIcons || homeIconsHtml();
+
+            const prepared = injectBaseHref(
+                injectOffTabSupport(injectAutoclickSupport(injectMuteSupport(htmlCode, isMuted)), bgRunEnabled),
+                document.baseURI
+            );
+
+            win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>${escapeHtmlText(title)}</title>
+${icons}
+<style>
+    html, body { margin: 0; height: 100%; background: #fff; }
+    iframe { border: 0; display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<script>
+    // Same trick as the main page: re-append the icon links so the browser
+    // picks the favicon back up after the document is written.
+    function refreshFavicon() {
+        const existingIcons = document.querySelectorAll("link[rel='icon']");
+        existingIcons.forEach(oldIcon => {
+            const newIcon = oldIcon.cloneNode(true);
+            oldIcon.remove();
+            document.head.appendChild(newIcon);
+        });
+    }
+    setTimeout(refreshFavicon, 51);
+<\/script>
+</body>
+</html>`);
+            win.document.close();
+
+            // document.write resets the title in some browsers; pin it afterwards.
+            try { win.document.title = title; } catch (err) { }
+
+            const iframe = win.document.createElement("iframe");
+            iframe.srcdoc = prepared;
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.referrerPolicy = "no-referrer";
+            win.document.body.appendChild(iframe);
+
+            try { win.refreshFavicon && win.setTimeout(win.refreshFavicon, 51); } catch (err) { }
+        }
+
         function openHtmlPreviewTab(htmlCode) {
             const id = "html-preview";
-            const title = "HTML Code";
+            const title = extractDocTitle(htmlCode) || "HTML Code";
 
             const prepared = injectBaseHref(injectAutoclickSupport(injectMuteSupport(htmlCode, isMuted)), document.baseURI);
 
             if (tabs.has(id)) {
                 const existing = tabs.get(id);
+                existing.title = title;
+                const label = existing.button.querySelector(".tab-title");
+                if (label) label.textContent = sanitizeTitle(title);
                 existing.panel.innerHTML = "";
                 const iframe = document.createElement("iframe");
                 iframe.className = "game-frame";
@@ -2184,9 +2885,14 @@ ${icons}
 &lt;/body&gt;
 &lt;/html&gt;</textarea>
         <div class="runner-controls">
-          <button id="runner-run-btn">Open in New Tab</button>
+          <button id="runner-run-btn">Open in New Subtab</button>
+          <button id="runner-newtab-btn">Open in New Tab</button>
           <button id="runner-clear-btn">Clear</button>
         </div>
+        <label class="runner-check" for="runner-cloak">
+          <input type="checkbox" id="runner-cloak" checked>
+          <span>Keep Cloaking</span>
+        </label>
       </div>
     </div>
   `;
@@ -2201,10 +2907,16 @@ ${icons}
 
             const code = panel.querySelector("#runner-code");
             const runBtn = panel.querySelector("#runner-run-btn");
+            const newTabBtn = panel.querySelector("#runner-newtab-btn");
+            const cloakBox = panel.querySelector("#runner-cloak");
             const clearBtn = panel.querySelector("#runner-clear-btn");
 
             runBtn.onclick = () => {
                 openHtmlPreviewTab(code.value);
+            };
+
+            newTabBtn.onclick = () => {
+                openHtmlInNewWindow(code.value, cloakBox.checked);
             };
 
             clearBtn.onclick = () => {
@@ -2232,6 +2944,7 @@ ${icons}
                 <textarea class="runner-textarea" placeholder="Paste your bookmarklet javascript: here..."></textarea>
                 <div class="runner-controls">
                     <button class="run-btn">Run Bookmarklet</button>
+                    <button class="clear-btn">Clear</button>
                 </div>
             </div>
         </div>
@@ -2239,6 +2952,11 @@ ${icons}
 
             const textarea = tab.panel.querySelector(".runner-textarea");
             const runBtn = tab.panel.querySelector(".run-btn");
+            const clearBtn = tab.panel.querySelector(".clear-btn");
+
+            clearBtn.addEventListener("click", () => {
+                textarea.value = "";
+            });
 
             runBtn.addEventListener("click", () => {
                 let code = textarea.value.trim();
