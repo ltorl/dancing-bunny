@@ -413,9 +413,121 @@
 
         .main-content {
             min-height: 100%;
-            padding: 20px 22px 50px;
+            /* extra bottom room so the fixed corner links never sit on content */
+            padding: 20px 22px 80px;
             position: relative;
         }
+
+        /* Pinned to the viewport, so the row holds its corner while the list
+           scrolls. Lives inside #home-pane so it hides along with it. */
+        #game-context-menu {
+            position: fixed;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            min-width: 210px;
+            padding: 6px;
+            background: rgba(30, 26, 46, 0.97);
+            border: 2px solid rgba(176, 0, 230, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        #game-context-menu.open {
+            display: flex;
+        }
+
+        #game-context-menu .ctx-item {
+            appearance: none;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 15px;
+            text-align: left;
+            color: #fff;
+            padding: 9px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        #game-context-menu .ctx-item:hover,
+        #game-context-menu .ctx-item:focus-visible {
+            background: rgba(176, 0, 230, 0.35);
+            color: #fff;
+            outline: none;
+        }
+
+        #corner-links {
+            position: fixed;
+            right: 20px;
+            bottom: 14px;
+            z-index: 5;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            align-items: baseline;
+            gap: 6px 20px;
+        }
+
+        .corner-link {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: none;
+            font-family: 'Comic Sans MS', sans-serif;
+            font-size: 16px;
+            line-height: 1.4;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            transition: color 0.2s ease;
+        }
+
+        /* Underline lives on the text itself: text-decoration on an inline-flex
+           container does not reliably reach its flex items. It stays
+           transparent until hover/focus so the row reads clean at rest. */
+        .corner-link span {
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+            transition: color 0.2s ease, text-decoration-color 0.2s ease;
+        }
+
+        #github-link svg {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+            /* nudge the icon down so it sits on the text baseline */
+            transform: translateY(2px);
+        }
+
+        .corner-link:hover,
+        .corner-link:focus-visible {
+            color: #d98cff;
+        }
+
+        .corner-link:hover span,
+        .corner-link:focus-visible span {
+            text-decoration-color: #d98cff;
+        }
+
+        #github-link:visited {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #github-link:visited:hover {
+            color: #d98cff;
+        }
+
+
 
 
         /* ==========================================================================
@@ -609,112 +721,6 @@
             font-size: 20px;
         }
 
-        .recent-pane {
-            height: 100%;
-            overflow-y: auto;
-            box-sizing: border-box;
-            padding: 32px 20px 48px;
-            color: white;
-            background: linear-gradient(135deg, #2e3244 30%, #561a86 100%);
-            background-attachment: fixed;
-        }
-
-        .recent-inner {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .recent-header {
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 32px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .recent-subheader {
-            text-align: center;
-            margin: 0 0 24px;
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.55);
-            padding-bottom: 18px;
-            border-bottom: 3px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .recent-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 12px;
-        }
-
-        .recent-card {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            padding: 14px 16px;
-            box-sizing: border-box;
-            text-align: left;
-            font-size: 16px;
-            font-weight: 500;
-            color: white;
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            transition: all 0.25s ease;
-        }
-
-        .recent-card:hover {
-            background: rgba(176, 0, 230, 0.25);
-            border-color: rgba(176, 0, 230, 0.7);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(176, 0, 230, 0.35);
-        }
-
-        .recent-card:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .recent-rank {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .recent-card:hover .recent-rank {
-            color: white;
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        .recent-name {
-            flex: 1;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .recent-empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 17px;
-            line-height: 1.7;
-            border: 2px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
-        }
-
         .runner-pane {
             display: flex;
             flex-direction: column;
@@ -780,13 +786,9 @@
         }
 
         /* Common layout configuration for external operational utility keys */
-        #open-runner-btn,
         #open-proxy-btn,
         #force-open-proxy-btn,
-        #open-form-btn,
-        #doc-btn,
-        #open-recent-btn,
-        #open-bookmarklet-runner-btn {
+        #doc-btn {
             font-family: Comic Sans MS, sans-serif;
             background: none;
             border: 2px solid rgba(176, 0, 230 0.25);
@@ -801,12 +803,8 @@
             margin-left: 8px;
         }
 
-        #open-runner-btn:hover,
         #open-proxy-btn:hover,
-        #open-form-btn:hover,
-        #doc-btn:hover,
-        #open-recent-btn:hover,
-        #open-bookmarklet-runner-btn:hover {
+        #doc-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(176, 0, 230, 0.4);
         }
@@ -851,7 +849,7 @@
             }
 
             .main-content {
-                padding: 16px 12px 42px;
+                padding: 16px 12px 110px;
             }
 
             .runner-grid {
@@ -875,62 +873,6 @@
                     Made by a Turtle
                 </h2>
 
-                <h2 class="subheading">
-                    Documentation:
-                    <button id="doc-btn" onclick="
-                        fetch('https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/docs/documentation.html')
-                        .then(response => response.text())
-                        .then(text => {
-                            const newWin = window.open('about:blank', '_blank');
-                            if (newWin) {
-                                newWin.document.open();
-                                newWin.document.write(text);
-                                newWin.document.close();
-                            }
-                        });">
-                        Dancing Bunny GN Doc
-                    </button>
-                </h2>
-
-                <h2 class="subheading">
-                    Run HTML Code:
-                    <button id="open-runner-btn" class="btn-outline">Open Code Runner</button>
-                </h2>
-
-                <h2 class="subheading">
-                    Run Bookmarklet Code:
-                    <button id="open-bookmarklet-runner-btn" style="line-height: 2; margin-left: 8px;">
-                        Open Bookmarklet Runner
-                    </button>
-                </h2>
-
-                <!--
-                <h2 class="subheading">
-                    Other Apps:
-                    <select id="proxy-selector">
-                        <option value="https://truffled.lol/">Truffled</option>
-                        <option value="https://incog.works/">Incognito</option>
-                        <option value="https://gointospace.app/">Interstellar</option>
-                        <option value="https://anura.pro/">Anura</option>
-                        <option value="https://definitelyscience.com/">Definitely Science</option>
-                    </select>
-
-                    <button class="btn-outline" id="open-proxy-btn" onclick="openSelectedProxy()">Open</button>
-                    <button class="btn-outline" onclick="openSelectedProxyForceIframe()" id="force-open-proxy-btn">Force
-                        Iframe</button>
-                </h2>
-                -->
-
-                <h2 class="subheading">
-                    Recently Played:
-                    <button id="open-recent-btn" class="btn-outline">Open Recent Games</button>
-                </h2>
-
-                <h2 class="subheading">
-                    Make a sugestion:
-                    <button id="open-form-btn" class="btn-outline">Open Form</button>
-                </h2>
-
                 <br /><br />
 
                 <div class="search-container">
@@ -939,6 +881,20 @@
                 </div>
 
                 <div id="sections-container"></div>
+            </div>
+
+            <div id="corner-links">
+                <button type="button" id="open-runner-btn" class="corner-link"><span>HTML Runner</span></button>
+                <button type="button" id="open-bookmarklet-runner-btn" class="corner-link"><span>Bookmarklet Runner</span></button>
+                <button type="button" id="open-form-btn" class="corner-link"><span>Make a Suggestion</span></button>
+                <a id="github-link" class="corner-link" href="https://github.com/ltorl/dancing-bunny" target="_blank" rel="noopener noreferrer"
+                    title="View the source on GitHub" aria-label="View the source on GitHub">
+                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path fill="currentColor"
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+                    </svg>
+                    <span>Github</span>
+                </a>
             </div>
         </div>
     </div>
@@ -971,7 +927,7 @@
         const MUTE_KEY = "dancing-bunny-muted-v1";
         const RECENT_KEY = "dancing-bunny-recent-v1";
         const BGRUN_KEY = "dancing-bunny-bgrun-v1";
-        const RECENT_MAX = 20;
+        const RECENT_MAX = 15;
 
         // When true, game tabs keep rendering (and therefore keep running) while
         // another tab is on screen. Turning it off pauses them to save CPU.
@@ -1016,7 +972,7 @@
         function recordRecent(file) {
             recent = [file, ...recent.filter(f => f !== file)].slice(0, RECENT_MAX);
             saveRecent();
-            renderRecentPane();
+            renderRecentSection();
         }
 
         function saveMute() {
@@ -1105,11 +1061,21 @@
 
         function applyBackgroundRunState() {
             document.body.classList.toggle("no-bg-run", !bgRunEnabled);
+
+            document.querySelectorAll("iframe").forEach(frame => {
+                try {
+                    frame.contentWindow?.postMessage({ type: "OFF_TAB_RUN", enabled: bgRunEnabled }, "*");
+                    if (typeof frame.contentWindow?.__setOffTabRun === "function") {
+                        frame.contentWindow.__setOffTabRun(bgRunEnabled);
+                    }
+                } catch (e) { }
+            });
+
             const btn = document.getElementById("bgrun-btn");
             if (btn) {
                 btn.classList.toggle("off", !bgRunEnabled);
                 btn.title = bgRunEnabled
-                    ? "Background games: ON (they keep running on other tabs)"
+                    ? "Background games: ON (they keep running on other subtabs and while this browser tab is hidden)"
                     : "Background games: OFF (paused when not visible)";
                 btn.setAttribute("aria-label", btn.title);
                 btn.setAttribute("aria-pressed", bgRunEnabled ? "true" : "false");
@@ -1191,7 +1157,7 @@
            background games keep getting clicked; only an unplaced picker is
            cancelled when you leave its tab. */
 
-        const AUTOCLICK_INTERVAL_MS = 100;
+        const AUTOCLICK_INTERVAL_MS = 1;
 
         const autoclickers = new Map(); // tab id -> clicker state
 
@@ -1668,6 +1634,138 @@
             return `${muteScript}${html}`;
         }
 
+        /* Browsers freeze requestAnimationFrame and clamp timers once the whole
+           browser tab is hidden, which stalls idle/clicker games even though our
+           in-page subtabs keep them mounted. This shim keeps them ticking off-tab
+           by driving their callbacks from a Web Worker's clock instead. It only
+           takes over while the page is hidden, so visible games run on the real
+           rAF, and it dies with the page like anything else. */
+        function injectOffTabSupport(html, enabled = true) {
+            const script = `
+<script>
+(function() {
+  if (window.__OFF_TAB_TICKER) return;
+  window.__OFF_TAB_TICKER = true;
+
+  var TICK_MS = 16;
+  var enabled = ${enabled ? "true" : "false"};
+
+  window.addEventListener("message", function(e) {
+    var data = e.data;
+    if (data && data.type === "OFF_TAB_RUN") enabled = !!data.enabled;
+  });
+  window.__setOffTabRun = function(value) { enabled = !!value; };
+
+  function hidden() { return document.visibilityState === "hidden"; }
+  function active() { return enabled && hidden(); }
+
+  /* Worker timers keep running at full rate in a backgrounded page far longer
+     than page timers do; setInterval is the fallback when Workers are blocked. */
+  var tickHandlers = [];
+  function onTick() {
+    for (var i = 0; i < tickHandlers.length; i++) {
+      try { tickHandlers[i](); } catch (e) {}
+    }
+  }
+
+  try {
+    var workerSrc = "var id=null;onmessage=function(e){if(e.data==='start'){if(id===null)id=setInterval(function(){postMessage(0);}," + TICK_MS + ");}else{clearInterval(id);id=null;}};";
+    var worker = new Worker(URL.createObjectURL(new Blob([workerSrc], { type: "text/javascript" })));
+    worker.onmessage = onTick;
+    worker.postMessage("start");
+  } catch (e) {
+    setInterval(onTick, TICK_MS);
+  }
+
+  /* ---------- requestAnimationFrame ---------- */
+  var nativeRaf = window.requestAnimationFrame && window.requestAnimationFrame.bind(window);
+  var nativeCaf = window.cancelAnimationFrame && window.cancelAnimationFrame.bind(window);
+
+  if (nativeRaf) {
+    var SHIM_BASE = 1000000000;   // keep our ids clear of the native ones
+    var nextRafId = SHIM_BASE;
+    var rafQueue = new Map();
+
+    window.requestAnimationFrame = function(cb) {
+      if (!active()) return nativeRaf(cb);
+      var id = nextRafId++;
+      rafQueue.set(id, cb);
+      return id;
+    };
+
+    window.cancelAnimationFrame = function(id) {
+      if (id >= SHIM_BASE) { rafQueue.delete(id); return; }
+      if (nativeCaf) nativeCaf(id);
+    };
+
+    tickHandlers.push(function() {
+      if (rafQueue.size === 0) return;
+      var due = rafQueue;
+      rafQueue = new Map();
+      var stamp = performance.now();
+      due.forEach(function(cb) {
+        try { cb(stamp); } catch (e) {}
+      });
+    });
+  }
+
+  /* ---------- setTimeout / setInterval ---------- */
+  var nativeSetTimeout = window.setTimeout.bind(window);
+  var nativeClearTimeout = window.clearTimeout.bind(window);
+  var nativeSetInterval = window.setInterval.bind(window);
+  var nativeClearInterval = window.clearInterval.bind(window);
+
+  var TIMER_BASE = 2000000000;
+  var nextTimerId = TIMER_BASE;
+  var timers = new Map();
+
+  function schedule(fn, delay, args, repeating) {
+    var wait = Math.max(0, Number(delay) || 0);
+    var id = nextTimerId++;
+    timers.set(id, { fn: fn, args: args, due: performance.now() + wait, every: repeating ? wait : null });
+    return id;
+  }
+
+  window.setTimeout = function(fn, delay) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    if (!active() || typeof fn !== "function") return nativeSetTimeout.apply(window, arguments);
+    return schedule(fn, delay, args, false);
+  };
+
+  window.setInterval = function(fn, delay) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    if (!active() || typeof fn !== "function") return nativeSetInterval.apply(window, arguments);
+    return schedule(fn, delay, args, true);
+  };
+
+  window.clearTimeout = function(id) {
+    if (id >= TIMER_BASE) { timers.delete(id); return; }
+    nativeClearTimeout(id);
+  };
+
+  window.clearInterval = function(id) {
+    if (id >= TIMER_BASE) { timers.delete(id); return; }
+    nativeClearInterval(id);
+  };
+
+  tickHandlers.push(function() {
+    if (timers.size === 0) return;
+    var now = performance.now();
+    timers.forEach(function(timer, id) {
+      if (now < timer.due) return;
+      if (timer.every === null) timers.delete(id);
+      else timer.due = now + timer.every;
+      try { timer.fn.apply(window, timer.args); } catch (e) {}
+    });
+  });
+})();
+<\/script>`;
+
+            if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${script}</body>`);
+            if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, `${script}</head>`);
+            return `${html}${script}`;
+        }
+
         function injectAutoclickSupport(html) {
             const clickScript = `
 <script>
@@ -1741,6 +1839,164 @@
                 e.preventDefault();
                 openGameTab(file, { background: true });
             });
+            el.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                openGameContextMenu(e, file);
+            });
+        }
+
+        /* ---------------- right-click menu ---------------- */
+
+        let ctxMenu = null;
+
+        function hideGameContextMenu() {
+            if (ctxMenu) ctxMenu.classList.remove("open");
+        }
+
+        function ensureGameContextMenu() {
+            if (ctxMenu) return ctxMenu;
+
+            ctxMenu = document.createElement("div");
+            ctxMenu.id = "game-context-menu";
+            ctxMenu.setAttribute("role", "menu");
+            document.body.appendChild(ctxMenu);
+
+            // Any interaction outside the menu dismisses it.
+            document.addEventListener("mousedown", (e) => {
+                if (ctxMenu.classList.contains("open") && !ctxMenu.contains(e.target)) hideGameContextMenu();
+            });
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") hideGameContextMenu();
+            });
+            window.addEventListener("resize", hideGameContextMenu);
+            window.addEventListener("blur", hideGameContextMenu);
+            document.addEventListener("scroll", hideGameContextMenu, true);
+
+            return ctxMenu;
+        }
+
+        function openGameContextMenu(e, file) {
+            const menu = ensureGameContextMenu();
+            menu.innerHTML = "";
+
+            const items = [
+                ["Open", () => openGameTab(file)],
+                ["Open Game in New Subtab", () => openGameTab(file, { background: true })],
+                ["Open Game in New Tab", () => openGameInNewWindow(file)],
+            ];
+
+            items.forEach(([label, action]) => {
+                const item = document.createElement("button");
+                item.type = "button";
+                item.className = "ctx-item";
+                item.setAttribute("role", "menuitem");
+                item.textContent = label;
+                item.onclick = () => { hideGameContextMenu(); action(); };
+                menu.appendChild(item);
+            });
+
+            // Show first so the box has a measurable size, then clamp on-screen.
+            menu.classList.add("open");
+            menu.style.left = "0px";
+            menu.style.top = "0px";
+            const rect = menu.getBoundingClientRect();
+            const x = Math.min(e.clientX, window.innerWidth - rect.width - 8);
+            const y = Math.min(e.clientY, window.innerHeight - rect.height - 8);
+            menu.style.left = `${Math.max(8, x)}px`;
+            menu.style.top = `${Math.max(8, y)}px`;
+
+            const first = menu.querySelector(".ctx-item");
+            if (first) first.focus();
+        }
+
+        /* Plain fetch across the proxy list — the in-tab loader logs its progress
+           into the tab, but a popup has nowhere to put that. */
+        async function fetchGameSource(file) {
+            const encoded = encodeURIComponent(normalizeFileName(file));
+            for (const base of GAME_BASES) {
+                try {
+                    const response = await fetch(`${base}${encoded}?t=${Date.now()}`);
+                    if (!response.ok) continue;
+                    const text = await response.text();
+                    const clean = text.trim().toLowerCase();
+                    if (clean === "404: not found" || clean === "not found" || clean.includes("404 page not found")) continue;
+                    return { text, base };
+                } catch (e) { /* try the next proxy */ }
+            }
+            return null;
+        }
+
+        /* Opens the game in a real browser tab on about:blank, wearing the home
+           tab's title and favicon rather than the game's. */
+        async function openGameInNewWindow(file) {
+            const win = window.open("about:blank", "_blank");
+            if (!win) {
+                alert("The popup was blocked. Allow popups for this page to open games in a new tab.");
+                return;
+            }
+
+            const title = displayNameFromFile(file);
+            const icons = [...document.querySelectorAll("link[rel='icon']")].map(l => l.outerHTML).join("\n");
+
+            win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>New tab</title>
+${icons}
+<style>
+    html, body { margin: 0; height: 100%; background: linear-gradient(135deg, #2e3244 30%, #561a86 100%); }
+    iframe { border: 0; display: block; width: 100%; height: 100%; }
+    #loading { display: grid; place-items: center; height: 100%; color: #fff; font-family: 'Comic Sans MS', sans-serif; font-size: 20px; }
+</style>
+</head>
+<body><div id="loading">Loading ${sanitizeTitle(title)}...</div>
+<script>
+    // Same trick as the main page: re-append the icon links so the browser
+    // picks the favicon back up after the document is written.
+    function refreshFavicon() {
+        const existingIcons = document.querySelectorAll("link[rel='icon']");
+        existingIcons.forEach(oldIcon => {
+            const newIcon = oldIcon.cloneNode(true);
+            oldIcon.remove();
+            document.head.appendChild(newIcon);
+        });
+    }
+    setTimeout(refreshFavicon, 51);
+<\/script>
+</body>
+</html>`);
+            win.document.close();
+
+            // document.write resets the title in some browsers; pin it afterwards.
+            try { win.document.title = "New tab"; } catch (err) { }
+
+            recordRecent(file);
+
+            const source = await fetchGameSource(file);
+            if (win.closed) return;
+
+            const loading = win.document.getElementById("loading");
+
+            if (!source) {
+                if (loading) {
+                    loading.textContent = `Failed to load ${sanitizeTitle(title)}.`;
+                    loading.style.color = "#ff5555";
+                }
+                return;
+            }
+
+            let html = injectOffTabSupport(injectAutoclickSupport(injectMuteSupport(source.text, isMuted)), bgRunEnabled);
+            html = injectBaseHref(html, source.base);
+
+            if (loading) loading.remove();
+            const iframe = win.document.createElement("iframe");
+            iframe.srcdoc = html;
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.referrerPolicy = "no-referrer";
+            win.document.body.appendChild(iframe);
+
+            try { win.refreshFavicon && win.setTimeout(win.refreshFavicon, 51); } catch (err) { }
         }
 
         async function openGameTab(file, opts = {}) {
@@ -1821,7 +2077,7 @@
 
                 if (!text) throw new Error("All proxy servers failed, were skipped, or the file does not exist.");
 
-                let html = injectAutoclickSupport(injectMuteSupport(text, isMuted));
+                let html = injectOffTabSupport(injectAutoclickSupport(injectMuteSupport(text, isMuted)), bgRunEnabled);
                 html = injectBaseHref(html, successBase);
 
                 tab.panel.innerHTML = "";
@@ -1892,82 +2148,6 @@
             tabs.set(id, tab);
             tabOrder.push(id);
             activateTab(id);
-        }
-
-        function renderRecentPane() {
-            const list = document.getElementById("recent-list");
-            if (!list) return;
-
-            list.innerHTML = "";
-
-            const count = document.getElementById("recent-count");
-
-            if (recent.length === 0) {
-                list.style.display = "block";
-                if (count) count.textContent = " ";
-                const empty = document.createElement("div");
-                empty.className = "recent-empty";
-                empty.textContent = "No games played yet";
-                list.appendChild(empty);
-                return;
-            }
-
-            list.style.display = "";
-            if (count) count.textContent = ` `;
-
-            recent.forEach((file, i) => {
-                const card = document.createElement("button");
-                card.className = "recent-card";
-                card.dataset.file = file;
-                bindGameLauncher(card, file);
-
-                const rank = document.createElement("span");
-                rank.className = "recent-rank";
-                rank.textContent = i + 1;
-
-                const name = document.createElement("span");
-                name.className = "recent-name";
-                name.textContent = displayNameFromFile(file);
-                name.title = name.textContent;
-
-                card.appendChild(rank);
-                card.appendChild(name);
-                list.appendChild(card);
-            });
-        }
-
-        function openRecentGamesTab() {
-            const id = "recent-games";
-            const title = "Recent Games";
-
-            if (tabs.has(id)) { activateTab(id); renderRecentPane(); return; }
-
-            const button = createTabButton(id, title, true);
-            tabBar.insertBefore(button, tabBarAnchor());
-
-            const panel = document.createElement("div");
-            panel.className = "panel game-pane static-pane";
-            panel.id = `panel-${id}`;
-
-            const wrapper = document.createElement("div");
-            wrapper.className = "recent-pane";
-            wrapper.innerHTML = `
-    <div class="recent-inner">
-      <h2 class="recent-header">Recently Played</h2>
-      <p class="recent-subheader" id="recent-count"></p>
-      <div class="recent-list" id="recent-list"></div>
-    </div>
-  `;
-
-            panel.appendChild(wrapper);
-            contentArea.appendChild(panel);
-
-            const tab = { id, title, button, panel };
-            tabs.set(id, tab);
-            tabOrder.push(id);
-            activateTab(id);
-
-            renderRecentPane();
         }
 
         function openRunnerTab() {
@@ -2134,13 +2314,44 @@
             const container = document.getElementById("sections-container");
             const firstRealSection = container.firstElementChild;
             container.insertBefore(section, firstRealSection);
+
+            filterGames();
+        }
+
+        function renderRecentSection() {
+            const container = document.getElementById("sections-container");
+            if (!container) return;
+
+            const existing = document.getElementById("section-recent");
+            if (existing) existing.remove();
+
+            const recentSidebarBtn = document.getElementById("sidebar-recent");
+            if (recentSidebarBtn) recentSidebarBtn.style.opacity = recent.length > 0 ? "1" : "0.3";
+
+            if (recent.length === 0) return;
+
+            const section = document.createElement("div");
+            section.className = "letter-section"; section.id = "section-recent";
+
+            const header = document.createElement("div");
+            header.className = "letter-header"; header.textContent = "Recently Played"; section.appendChild(header);
+
+            const buttonsContainer = document.createElement("div");
+            buttonsContainer.className = "buttons-container";
+            recent.forEach(file => buttonsContainer.appendChild(makeGameRow(file)));
+            section.appendChild(buttonsContainer);
+
+            const fav = document.getElementById("section-fav");
+            container.insertBefore(section, fav ? fav.nextElementSibling : container.firstElementChild);
+
+            filterGames();
         }
 
         function generateSidebar(allChars, filesByChar) {
             const sidebar = document.getElementById("sidebar"); sidebar.innerHTML = "";
 
             const searchBtn = document.createElement("button");
-            searchBtn.className = "sidebar-btn"; searchBtn.textContent = "Search";
+            searchBtn.className = "sidebar-btn"; searchBtn.textContent = "search";
             searchBtn.onclick = () => document.getElementById("gameSearch").scrollIntoView({ behavior: "smooth", block: "end" });
             sidebar.appendChild(searchBtn);
 
@@ -2152,6 +2363,15 @@
                 if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
             };
             sidebar.appendChild(favBtn);
+
+            const recentBtn = document.createElement("button");
+            recentBtn.className = "sidebar-btn"; recentBtn.id = "sidebar-recent"; recentBtn.textContent = "recent";
+            recentBtn.style.opacity = recent.length > 0 ? "1" : "0.3";
+            recentBtn.onclick = () => {
+                const section = document.getElementById("section-recent");
+                if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+            };
+            sidebar.appendChild(recentBtn);
 
             allChars.forEach((char) => {
                 if (char === "Search") return;
@@ -2200,11 +2420,12 @@
                 section.appendChild(buttonsContainer); container.appendChild(section);
             });
 
-            generateSidebar(sidebarChars, filesByChar); renderFavoritesSection();
+            generateSidebar(sidebarChars, filesByChar); renderFavoritesSection(); renderRecentSection();
         }
 
         function filterGames() {
             const input = document.getElementById("gameSearch");
+            if (!input) return;
             const filter = input.value.toLowerCase();
             const sections = document.querySelectorAll(".letter-section");
 
@@ -2226,7 +2447,6 @@
         }
 
         document.getElementById("open-runner-btn").addEventListener("click", openRunnerTab);
-        document.getElementById("open-recent-btn").addEventListener("click", openRecentGamesTab);
 
         async function fetchAndInjectProxy(targetUrl, tab, title, id) {
             const logArea = tab.panel.querySelector(`#logs-${id}`);
@@ -2360,6 +2580,13 @@
         }
 
         document.getElementById("open-form-btn").addEventListener("click", openFormTab);
+
+        // Ask the browser to show its native "Leave site?" prompt on close/reload.
+        window.addEventListener("beforeunload", (e) => {
+            e.preventDefault();
+            e.returnValue = "";
+            return "";
+        });
 
         function initWhenReady() {
             if (typeof files === "undefined") {
