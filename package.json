@@ -6,5 +6,6 @@
   "scripts": {
     "start": "node -e \"const http=require('http'),fs=require('fs');http.createServer((req,res)=>fs.createReadStream('v2.html').pipe(res)).listen(8080,()=>console.log('Starting up http-server, serving ./\\n\\nAvailable on:\\n  http://localhost:8080\\n\\nPress Ctrl+C to stop the server.'))\""
   },
-  "author": "letrol"
+  "author": "letrol",
+  "license": "ISC"
 }
