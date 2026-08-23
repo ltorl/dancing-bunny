@@ -15,12 +15,10 @@ The project includes:
 * Multi-tab game interface
 * Search system
 * Favorites system
+* Autoclicker
 * Bookmarklet launcher
-* Data URI launcher
-* Custom cloaking support
-* Embedded launcher methods
-* Lightweight static deployment
-* Multiple mirror deployments
+* NPM svg launcher
+* New tab cloaking
 
 The project currently contains access to over **2608 games**.
 
@@ -33,6 +31,8 @@ The project currently contains access to over **2608 games**.
 ---
 
 ## Launch Methods
+
+---
 
 ### NPM svg
 
