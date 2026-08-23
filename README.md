@@ -26,7 +26,7 @@ The project currently contains access to over **2608 games**.
 
 ## Demo
 
-# https://ltorl.github.io/dancing-bunny/index.svg
+# https://ltorl.github.io/dancing-bunny/v2.html
 
 ---
 
