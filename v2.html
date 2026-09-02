@@ -17,8 +17,14 @@
             --bg1: #2e3244;
             --bg2: #561a86;
             --text: #ffffff;
-            --tab-bg: rgba(0, 0, 0, 0.28);
-            --tab-active: rgba(176, 0, 230, 0.28);
+            /* Opaque equivalents of what these used to be as translucent
+               layers -- rgba(0,0,0,.28) / rgba(176,0,230,.28) composited over
+               the tab bar's rgba(0,0,0,.22) veil over the page gradient
+               (#2e3244 at the top). Same look, but a dragged tab never shows
+               whatever it is passing over. */
+            --tab-bg: #1a1c26;
+            --tab-active: #4b1c67;
+            --tab-hover: #3c3f4b;
             --sidebar-w: 150px;
             --topbar-h: 58px;
         }
@@ -116,11 +122,17 @@
             transition: transform 0.15s ease, border-color 0.15s ease;
         }
 
-        .tab-btn:hover,
+        .tab-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.24);
+            background: var(--tab-hover);
+        }
+
         #autoclick-btn:hover,
         #refresh-favicon-btn:hover,
         #bgrun-btn:hover,
-        #mute-btn:hover {
+        #mute-btn:hover,
+        #export-btn:hover {
             transform: translateY(-1px);
             border-color: rgba(255, 255, 255, 0.24);
             background: rgba(255, 255, 255, 0.11);
@@ -189,10 +201,58 @@
             background: rgba(255, 80, 80, 0.35);
         }
 
+        /* ---- Drag to reorder ----
+           Tabs slide out of the way while one is dragged. The dragged tab gets
+           an inline transform (which beats the hover rule) and no transition so
+           it tracks the pointer exactly; everyone else eases into their new
+           slot. The Home tab is never draggable and never displaced. */
+        .tab-btn.tab-sliding {
+            transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.25, 1);
+        }
+
+        /* Worn for one frame while the drag is committed: the DOM reorder has
+           already put every tab in its final spot, so the leftover transforms
+           must be dropped instantly -- transitioning them plays the slide over
+           again backwards. Declared after .tab-sliding so it wins the tie. */
+        .tab-btn.tab-no-anim {
+            transition: none;
+        }
+
+        .tab-btn.dragging,
+        .tab-btn.dropping {
+            background: var(--tab-bg);
+        }
+
+        .tab-btn.dragging.active,
+        .tab-btn.dropping.active {
+            background: var(--tab-active);
+        }
+
+        .tab-btn.dragging {
+            transition: none;
+            position: relative;
+            z-index: 5;
+            cursor: grabbing;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+            border-color: rgba(255, 255, 255, 0.32);
+        }
+
+        .tab-btn.dropping {
+            transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.25, 1),
+                box-shadow 0.22s ease;
+            position: relative;
+            z-index: 5;
+        }
+
+        #tab-bar.reordering .tab-btn:hover {
+            transform: none;
+        }
+
         #autoclick-btn,
         #refresh-favicon-btn,
         #bgrun-btn,
-        #mute-btn {
+        #mute-btn,
+        #export-btn {
             height: 42px;
             width: 48px;
             border-radius: 10px;
@@ -213,7 +273,8 @@
 
         #refresh-favicon-btn,
         #bgrun-btn,
-        #mute-btn {
+        #mute-btn,
+        #export-btn {
             margin-left: 6px;
         }
 
@@ -227,7 +288,8 @@
         #autoclick-btn svg,
         #refresh-favicon-btn svg,
         #bgrun-btn svg,
-        #mute-btn svg {
+        #mute-btn svg,
+        #export-btn svg {
             width: 22px;
             height: 22px;
             display: block;
@@ -255,6 +317,107 @@
         #autoclick-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
+        }
+
+        /* ---- Export / backup menu ---- */
+        #export-menu {
+            position: fixed;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 264px;
+            max-width: 340px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 6px;
+            background: rgba(30, 26, 46, 0.97);
+            border: 2px solid rgba(176, 0, 230, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        #export-menu.open {
+            display: flex;
+        }
+
+        #export-menu .ex-head {
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.55);
+            padding: 6px 10px 2px;
+        }
+
+        #export-menu .ex-item {
+            appearance: none;
+            border: 0;
+            background: none;
+            font-family: inherit;
+            font-size: 15px;
+            text-align: left;
+            color: #fff;
+            padding: 9px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        #export-menu .ex-item svg {
+            width: 17px;
+            height: 17px;
+            flex: 0 0 auto;
+            pointer-events: none;
+        }
+
+        #export-menu .ex-item:hover:not(:disabled),
+        #export-menu .ex-item:focus-visible {
+            background: rgba(176, 0, 230, 0.35);
+            outline: none;
+        }
+
+        #export-menu .ex-item:disabled {
+            opacity: 0.5;
+            cursor: progress;
+        }
+
+        #export-menu .ex-sep {
+            height: 1px;
+            margin: 4px 6px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #export-menu .ex-note:empty,
+        #export-menu .ex-status:empty {
+            display: none;
+        }
+
+        #export-menu .ex-note {
+            font-size: 12px;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 2px 10px 6px;
+        }
+
+        #export-menu .ex-status {
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: #ffd75e;
+            padding: 4px 10px 6px;
+            word-break: break-word;
+        }
+
+        #export-menu .ex-status.ok {
+            color: #7ff0a8;
+        }
+
+        #export-menu .ex-status.err {
+            color: #ff8b8b;
         }
 
         #autoclick-menu {
@@ -1297,6 +1460,34 @@
             tabBar.appendChild(btn);
         }
 
+        const ICON_EXPORT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12"/>
+            <path d="M7 10.5l5 5 5-5"/>
+            <path d="M4 20h16"/>
+        </svg>`;
+
+        const ICON_EX_FILE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v11"/>
+            <path d="M8 10.5l4 4 4-4"/>
+            <path d="M4 20h16"/>
+        </svg>`;
+
+        const ICON_EX_COPY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="11" height="11" rx="2"/>
+            <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>
+        </svg>`;
+
+        const ICON_EX_IMPORT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 14V3"/>
+            <path d="M8 6.5l4-4 4 4"/>
+            <path d="M4 20h16"/>
+        </svg>`;
+
+        const ICON_EX_PASTE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="4" width="14" height="17" rx="2"/>
+            <path d="M9 4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H9z" fill="currentColor"/>
+        </svg>`;
+
         const ICON_BGRUN = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="8"/>
             <path d="M12 7.5V12l3 1.8"/>
@@ -1346,15 +1537,18 @@
             ensureAutoclickButton();
             ensureRefreshFaviconButton();
             ensureBackgroundRunButton();
-            if (document.getElementById("mute-btn")) return;
-            const btn = document.createElement("button");
-            btn.id = "mute-btn";
-            btn.type = "button";
-            btn.innerHTML = isMuted ? ICON_SOUND_OFF : ICON_SOUND_ON;
-            btn.title = isMuted ? "Unmute All" : "Mute All";
-            btn.setAttribute("aria-label", btn.title);
-            btn.onclick = toggleMuteAll;
-            tabBar.appendChild(btn);
+            if (!document.getElementById("mute-btn")) {
+                const btn = document.createElement("button");
+                btn.id = "mute-btn";
+                btn.type = "button";
+                btn.innerHTML = isMuted ? ICON_SOUND_OFF : ICON_SOUND_ON;
+                btn.title = isMuted ? "Unmute All" : "Mute All";
+                btn.setAttribute("aria-label", btn.title);
+                btn.onclick = toggleMuteAll;
+                tabBar.appendChild(btn);
+            }
+            // Appended last so it always sits to the right of the mute button.
+            ensureExportButton();
         }
 
         function setMuteButtonState() {
@@ -1389,10 +1583,772 @@
             saveMuteAndApply();
         }
 
-        function tabBarAnchor() {
-            return document.getElementById("autoclick-btn")
-                || document.getElementById("refresh-favicon-btn")
-                || document.getElementById("mute-btn");
+        /* ---------------- Export / import of all site data ----------------
+           Games run in srcdoc iframes with allow-same-origin, so everything they
+           save lands in THIS page's origin: localStorage, sessionStorage,
+           IndexedDB (where emulators and bigger games keep their saves) and
+           cookies. A backup therefore has to walk all four, not just
+           localStorage. Cache Storage is deliberately skipped: it only holds
+           re-downloadable assets, never save data.
+
+           Import is a MERGE, never a wipe. Only the keys, stores and records
+           present in the backup file are written, so a save that covers three
+           games overwrites those three and leaves every other game alone. */
+
+        const BACKUP_FORMAT = "dancing-bunny-backup";
+        const BACKUP_VERSION = 1;
+
+        /* Pure asset caches: Unity parks the downloaded game payload here (tens
+           of MB per city for Subway Surfers alone) and re-downloads it whenever
+           it's missing. Progress never lives here — Unity keeps that in
+           /idbfs — so backing it up would balloon the file for nothing.
+           Delete a name from this set if you ever do want it included. */
+        const BACKUP_SKIP_DBS = new Set(["UnityCache"]);
+
+        /* JSON can't hold what IndexedDB hands back — ArrayBuffers, typed
+           arrays, Blobs, Dates, Maps, Sets. Encode those as tagged objects and
+           decode them on the way back in. */
+
+        function bytesToBase64(bytes) {
+            let bin = "";
+            const CHUNK = 0x8000;
+            for (let i = 0; i < bytes.length; i += CHUNK) {
+                bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+            }
+            return btoa(bin);
+        }
+
+        function base64ToBytes(b64) {
+            const bin = atob(b64);
+            const out = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+            return out;
+        }
+
+        const TYPED_ARRAYS = {
+            Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array,
+            Int32Array, Uint32Array, Float32Array, Float64Array,
+            ...(typeof BigInt64Array !== "undefined" ? { BigInt64Array } : {}),
+            ...(typeof BigUint64Array !== "undefined" ? { BigUint64Array } : {}),
+        };
+
+        async function encodeValue(value, seen = new Set()) {
+            if (value === undefined) return { __t: "undefined" };
+            if (value === null) return null;
+
+            const type = typeof value;
+            if (type === "boolean" || type === "string") return value;
+            if (type === "number") {
+                if (Number.isFinite(value)) return value;
+                return { __t: "number", v: String(value) };
+            }
+            if (type === "bigint") return { __t: "bigint", v: value.toString() };
+            if (type === "function" || type === "symbol") return { __t: "undefined" };
+
+            if (seen.has(value)) return { __t: "circular" };
+            seen.add(value);
+            try {
+                if (value instanceof Date) return { __t: "Date", v: value.getTime() };
+                if (value instanceof RegExp) return { __t: "RegExp", src: value.source, flags: value.flags };
+
+                if (value instanceof ArrayBuffer) {
+                    return { __t: "ArrayBuffer", v: bytesToBase64(new Uint8Array(value)) };
+                }
+                if (typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer) {
+                    return { __t: "ArrayBuffer", v: bytesToBase64(new Uint8Array(value)) };
+                }
+                if (ArrayBuffer.isView(value)) {
+                    const name = value.constructor && value.constructor.name;
+                    if (name === "DataView") {
+                        return {
+                            __t: "DataView",
+                            v: bytesToBase64(new Uint8Array(value.buffer, value.byteOffset, value.byteLength)),
+                        };
+                    }
+                    return {
+                        __t: "TypedArray",
+                        kind: name,
+                        v: bytesToBase64(new Uint8Array(value.buffer, value.byteOffset, value.byteLength)),
+                    };
+                }
+
+                if (typeof Blob !== "undefined" && value instanceof Blob) {
+                    const buf = await value.arrayBuffer();
+                    const out = {
+                        __t: "Blob",
+                        mime: value.type || "",
+                        v: bytesToBase64(new Uint8Array(buf)),
+                    };
+                    if (typeof File !== "undefined" && value instanceof File) {
+                        out.__t = "File";
+                        out.name = value.name;
+                        out.lastModified = value.lastModified;
+                    }
+                    return out;
+                }
+
+                if (value instanceof Map) {
+                    const entries = [];
+                    for (const [k, v] of value) {
+                        entries.push([await encodeValue(k, seen), await encodeValue(v, seen)]);
+                    }
+                    return { __t: "Map", v: entries };
+                }
+                if (value instanceof Set) {
+                    const items = [];
+                    for (const v of value) items.push(await encodeValue(v, seen));
+                    return { __t: "Set", v: items };
+                }
+
+                if (Array.isArray(value)) {
+                    const out = [];
+                    for (const v of value) out.push(await encodeValue(v, seen));
+                    return out;
+                }
+
+                // Plain object. Objects that genuinely carry a "__t" key get
+                // wrapped so decoding can't mistake them for a tag.
+                const obj = {};
+                for (const k of Object.keys(value)) {
+                    obj[k] = await encodeValue(value[k], seen);
+                }
+                if (Object.prototype.hasOwnProperty.call(value, "__t")) {
+                    return { __t: "object", v: obj };
+                }
+                return obj;
+            } finally {
+                seen.delete(value);
+            }
+        }
+
+        function decodeValue(value) {
+            if (value === null || typeof value !== "object") return value;
+            if (Array.isArray(value)) return value.map(decodeValue);
+
+            const tag = value.__t;
+            if (typeof tag !== "string") {
+                const out = {};
+                for (const k of Object.keys(value)) out[k] = decodeValue(value[k]);
+                return out;
+            }
+
+            switch (tag) {
+                case "undefined": return undefined;
+                case "circular": return undefined;
+                case "number": return Number(value.v);
+                case "bigint": return BigInt(value.v);
+                case "Date": return new Date(value.v);
+                case "RegExp": return new RegExp(value.src, value.flags);
+                case "ArrayBuffer": {
+                    const bytes = base64ToBytes(value.v);
+                    return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+                }
+                case "DataView": {
+                    const bytes = base64ToBytes(value.v);
+                    return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+                }
+                case "TypedArray": {
+                    const Ctor = TYPED_ARRAYS[value.kind] || Uint8Array;
+                    const bytes = base64ToBytes(value.v);
+                    if (Ctor === Uint8Array) return bytes;
+                    return new Ctor(bytes.buffer, bytes.byteOffset, bytes.byteLength / Ctor.BYTES_PER_ELEMENT);
+                }
+                case "Blob": return new Blob([base64ToBytes(value.v)], { type: value.mime || "" });
+                case "File": {
+                    const blob = new Blob([base64ToBytes(value.v)], { type: value.mime || "" });
+                    try {
+                        return new File([blob], value.name || "file", {
+                            type: value.mime || "",
+                            lastModified: value.lastModified || Date.now(),
+                        });
+                    } catch (e) { return blob; }
+                }
+                case "Map": return new Map((value.v || []).map(([k, v]) => [decodeValue(k), decodeValue(v)]));
+                case "Set": return new Set((value.v || []).map(decodeValue));
+                case "object": {
+                    const out = {};
+                    for (const k of Object.keys(value.v || {})) out[k] = decodeValue(value.v[k]);
+                    return out;
+                }
+                default: return value;
+            }
+        }
+
+        function idbRequest(req) {
+            return new Promise((resolve, reject) => {
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+                req.onblocked = () => reject(new Error("blocked"));
+            });
+        }
+
+        function idbTxDone(tx) {
+            return new Promise((resolve, reject) => {
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+                tx.onabort = () => reject(tx.error || new Error("aborted"));
+            });
+        }
+
+        function openIdb(name, version) {
+            return new Promise((resolve, reject) => {
+                const req = version ? indexedDB.open(name, version) : indexedDB.open(name);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+                req.onblocked = () => reject(new Error(`"${name}" is open in another tab — close it and retry`));
+            });
+        }
+
+        async function snapshotIndexedDb(onProgress) {
+            if (typeof indexedDB === "undefined" || !indexedDB.databases) return { databases: [], skipped: [], unsupported: true };
+
+            let list = [];
+            try { list = await indexedDB.databases(); } catch (e) { return { databases: [], skipped: [], unsupported: true }; }
+
+            const databases = [];
+            const skipped = [];
+            for (const info of list) {
+                if (!info || !info.name) continue;
+                if (BACKUP_SKIP_DBS.has(info.name)) { skipped.push(info.name); continue; }
+                if (onProgress) onProgress(info.name);
+                let db;
+                try { db = await openIdb(info.name); } catch (e) { continue; }
+
+                const dbOut = { name: db.name, version: db.version, stores: [] };
+                const storeNames = Array.from(db.objectStoreNames);
+                for (const storeName of storeNames) {
+                    try {
+                        const tx = db.transaction(storeName, "readonly");
+                        const store = tx.objectStore(storeName);
+                        const storeOut = {
+                            name: storeName,
+                            keyPath: store.keyPath === undefined ? null : store.keyPath,
+                            autoIncrement: !!store.autoIncrement,
+                            indexes: Array.from(store.indexNames).map(ix => {
+                                const idx = store.index(ix);
+                                return {
+                                    name: idx.name,
+                                    keyPath: idx.keyPath === undefined ? null : idx.keyPath,
+                                    unique: !!idx.unique,
+                                    multiEntry: !!idx.multiEntry,
+                                };
+                            }),
+                            records: [],
+                        };
+
+                        const rows = await new Promise((resolve, reject) => {
+                            const acc = [];
+                            const req = store.openCursor();
+                            req.onsuccess = () => {
+                                const cursor = req.result;
+                                if (!cursor) { resolve(acc); return; }
+                                acc.push({ key: cursor.key, value: cursor.value });
+                                cursor.continue();
+                            };
+                            req.onerror = () => reject(req.error);
+                        });
+
+                        for (const row of rows) {
+                            const rec = { value: await encodeValue(row.value) };
+                            // In-line keys travel inside the value; only out-of-line
+                            // keys have to be stored (and replayed) separately.
+                            if (store.keyPath === null || store.keyPath === undefined) {
+                                rec.key = await encodeValue(row.key);
+                            }
+                            storeOut.records.push(rec);
+                        }
+                        dbOut.stores.push(storeOut);
+                    } catch (e) { /* unreadable store — keep going */ }
+                }
+                db.close();
+                databases.push(dbOut);
+            }
+            return { databases, skipped, unsupported: false };
+        }
+
+        function readCookies() {
+            const out = {};
+            const raw = (document.cookie || "").split(";");
+            for (const part of raw) {
+                const trimmed = part.trim();
+                if (!trimmed) continue;
+                const eq = trimmed.indexOf("=");
+                if (eq < 0) continue;
+                out[trimmed.slice(0, eq)] = trimmed.slice(eq + 1);
+            }
+            return out;
+        }
+
+        function readWebStorage(store) {
+            const out = {};
+            if (!store) return out;
+            try {
+                for (let i = 0; i < store.length; i++) {
+                    const key = store.key(i);
+                    if (key === null) continue;
+                    out[key] = store.getItem(key);
+                }
+            } catch (e) { /* storage blocked */ }
+            return out;
+        }
+
+        async function buildBackup(onProgress) {
+            if (onProgress) onProgress("Reading localStorage…");
+            const local = readWebStorage(window.localStorage);
+            if (onProgress) onProgress("Reading sessionStorage…");
+            const session = readWebStorage(window.sessionStorage);
+            const cookies = readCookies();
+
+            if (onProgress) onProgress("Reading IndexedDB…");
+            const idb = await snapshotIndexedDb(name => {
+                if (onProgress) onProgress(`Reading IndexedDB: ${name}…`);
+            });
+
+            return {
+                format: BACKUP_FORMAT,
+                version: BACKUP_VERSION,
+                exportedAt: new Date().toISOString(),
+                origin: location.origin,
+                href: location.href,
+                userAgent: navigator.userAgent,
+                notes: "Merge-restore: only the keys and records in this file are overwritten.",
+                indexedDbSupported: !idb.unsupported,
+                skippedDatabases: idb.skipped || [],
+                data: {
+                    localStorage: local,
+                    sessionStorage: session,
+                    cookies,
+                    indexedDB: idb.databases,
+                },
+            };
+        }
+
+        function summarizeBackup(backup) {
+            const d = backup.data || {};
+            const localCount = Object.keys(d.localStorage || {}).length;
+            const sessionCount = Object.keys(d.sessionStorage || {}).length;
+            const cookieCount = Object.keys(d.cookies || {}).length;
+            const dbs = d.indexedDB || [];
+            let records = 0;
+            let stores = 0;
+            for (const db of dbs) {
+                for (const store of db.stores || []) {
+                    stores++;
+                    records += (store.records || []).length;
+                }
+            }
+            return { localCount, sessionCount, cookieCount, dbCount: dbs.length, stores, records };
+        }
+
+        /* ---- Restore (merge) ---- */
+
+        function deleteIdb(name) {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.deleteDatabase(name);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
+                req.onblocked = () => reject(new Error(`"${name}" is open in another tab — close it and retry`));
+            });
+        }
+
+        /* Opens without naming a version purely to learn whether the database
+           already exists: `upgradeneeded` only fires here when the browser had
+           to create it. */
+        function probeIdb(name) {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(name);
+                let created = false;
+                req.onupgradeneeded = () => { created = true; };
+                req.onsuccess = () => resolve({ db: req.result, created });
+                req.onerror = () => reject(req.error);
+                req.onblocked = () => reject(new Error(`"${name}" is open in another tab — close it and retry`));
+            });
+        }
+
+        function createIdbStores(name, version, specs) {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(name, version);
+                req.onupgradeneeded = () => {
+                    const upgraded = req.result;
+                    for (const spec of specs) {
+                        if (upgraded.objectStoreNames.contains(spec.name)) continue;
+                        const opts = {};
+                        if (spec.keyPath !== null && spec.keyPath !== undefined) opts.keyPath = spec.keyPath;
+                        if (spec.autoIncrement) opts.autoIncrement = true;
+                        const store = upgraded.createObjectStore(spec.name, opts);
+                        for (const idx of spec.indexes || []) {
+                            if (idx.keyPath === null || idx.keyPath === undefined) continue;
+                            try {
+                                store.createIndex(idx.name, idx.keyPath, {
+                                    unique: !!idx.unique,
+                                    multiEntry: !!idx.multiEntry,
+                                });
+                            } catch (e) { /* index already there */ }
+                        }
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+                req.onblocked = () => reject(new Error(`"${name}" is open in another tab — close it and retry`));
+            });
+        }
+
+        async function restoreIndexedDb(dbSpec) {
+            const wanted = (dbSpec.stores || []);
+            if (!wanted.length) return 0;
+
+            /* The database version has to come back EXACTLY as it was. Engines
+               like Emscripten's IDBFS — which is how every Unity WebGL game here
+               (Subway Surfers included) stores its progress — open their database
+               at a hard-coded version: `indexedDB.open("/idbfs", 21)`. Recreating
+               it at any higher number makes that call fail with VersionError, the
+               game silently falls back to an empty filesystem, and it looks like
+               a brand new save. */
+            const targetVersion = Math.max(1, dbSpec.version || 1);
+
+            let probe = await probeIdb(dbSpec.name);
+            let db = probe.db;
+
+            if (probe.created) {
+                // It didn't exist. Probing created an empty v1 shell, so throw
+                // that away and build it at the version the backup recorded.
+                db.close();
+                await deleteIdb(dbSpec.name);
+                db = await createIdbStores(dbSpec.name, targetVersion, wanted);
+            } else {
+                const missing = wanted.filter(s => !db.objectStoreNames.contains(s.name));
+                if (missing.length) {
+                    // Adding a store needs a version change. Prefer the recorded
+                    // version; only step past the live one when it's already
+                    // ahead, since there's no lower number available.
+                    const nextVersion = db.version < targetVersion ? targetVersion : db.version + 1;
+                    db.close();
+                    db = await createIdbStores(dbSpec.name, nextVersion, missing);
+                }
+            }
+
+            let written = 0;
+            for (const spec of wanted) {
+                if (!db.objectStoreNames.contains(spec.name)) continue;
+                const records = spec.records || [];
+                if (!records.length) continue;
+                const tx = db.transaction(spec.name, "readwrite");
+                const store = tx.objectStore(spec.name);
+                for (const rec of records) {
+                    const value = decodeValue(rec.value);
+                    try {
+                        // `put` overwrites only the matching key; untouched keys
+                        // in the same store survive.
+                        if (Object.prototype.hasOwnProperty.call(rec, "key")) {
+                            store.put(value, decodeValue(rec.key));
+                        } else {
+                            store.put(value);
+                        }
+                        written++;
+                    } catch (e) { /* one bad record shouldn't sink the store */ }
+                }
+                await idbTxDone(tx);
+            }
+            db.close();
+            return written;
+        }
+
+        async function restoreBackup(backup) {
+            if (!backup || backup.format !== BACKUP_FORMAT) {
+                throw new Error("Not a Dancing Bunny backup file.");
+            }
+            const d = backup.data || {};
+            const result = { local: 0, session: 0, cookies: 0, records: 0, dbs: 0, errors: [] };
+
+            for (const [k, v] of Object.entries(d.localStorage || {})) {
+                try { localStorage.setItem(k, v); result.local++; } catch (e) { result.errors.push(`localStorage ${k}`); }
+            }
+            for (const [k, v] of Object.entries(d.sessionStorage || {})) {
+                try { sessionStorage.setItem(k, v); result.session++; } catch (e) { result.errors.push(`sessionStorage ${k}`); }
+            }
+            for (const [k, v] of Object.entries(d.cookies || {})) {
+                try {
+                    document.cookie = `${k}=${v}; path=/; max-age=31536000; SameSite=Lax`;
+                    result.cookies++;
+                } catch (e) { result.errors.push(`cookie ${k}`); }
+            }
+
+            for (const dbSpec of d.indexedDB || []) {
+                if (!dbSpec || !dbSpec.name) continue;
+                try {
+                    result.records += await restoreIndexedDb(dbSpec);
+                    result.dbs++;
+                } catch (e) {
+                    result.errors.push(`IndexedDB "${dbSpec.name}": ${e && e.message ? e.message : e}`);
+                }
+            }
+            return result;
+        }
+
+        /* ---- Menu ---- */
+
+        function backupFilename() {
+            const d = new Date();
+            const pad = n => String(n).padStart(2, "0");
+            return `dancing-bunny-backup-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+        }
+
+        function downloadText(text, filename) {
+            const blob = new Blob([text], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+        }
+
+        async function copyText(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (e) { /* fall through to the legacy path */ }
+            try {
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand("copy");
+                ta.remove();
+                return ok;
+            } catch (e) { return false; }
+        }
+
+        function setExportStatus(text, kind = "") {
+            const el = document.getElementById("export-status");
+            if (!el) return;
+            el.textContent = text;
+            el.className = `ex-status${kind ? " " + kind : ""}`;
+        }
+
+        function setExportBusy(busy) {
+            const menu = document.getElementById("export-menu");
+            if (!menu) return;
+            menu.querySelectorAll(".ex-item").forEach(btn => { btn.disabled = busy; });
+        }
+
+        function ensureExportMenu() {
+            let menu = document.getElementById("export-menu");
+            if (menu) return menu;
+
+            menu = document.createElement("div");
+            menu.id = "export-menu";
+            menu.setAttribute("role", "menu");
+
+            const mkItem = (icon, label, onClick) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "ex-item";
+                btn.setAttribute("role", "menuitem");
+                btn.innerHTML = `${icon}<span></span>`;
+                btn.querySelector("span").textContent = label;
+                btn.onclick = onClick;
+                return btn;
+            };
+
+            const head = document.createElement("div");
+            head.className = "ex-head";
+            head.textContent = "Back up";
+            menu.appendChild(head);
+
+            menu.appendChild(mkItem(ICON_EX_FILE, "Download data file", async () => {
+                setExportBusy(true);
+                setExportStatus("Collecting data…");
+                try {
+                    const backup = await buildBackup(msg => setExportStatus(msg));
+                    const text = JSON.stringify(backup);
+                    downloadText(text, backupFilename());
+                    const s = summarizeBackup(backup);
+                    setExportStatus(
+                        `Saved ${s.localCount} local keys, ${s.records} IndexedDB records across ${s.dbCount} databases.`,
+                        "ok"
+                    );
+                } catch (e) {
+                    setExportStatus(`Export failed: ${e && e.message ? e.message : e}`, "err");
+                } finally { setExportBusy(false); }
+            }));
+
+            menu.appendChild(mkItem(ICON_EX_COPY, "Copy data to clipboard", async () => {
+                setExportBusy(true);
+                setExportStatus("Collecting data…");
+                try {
+                    const backup = await buildBackup(msg => setExportStatus(msg));
+                    const text = JSON.stringify(backup);
+                    const ok = await copyText(text);
+                    const s = summarizeBackup(backup);
+                    if (ok) {
+                        setExportStatus(
+                            `Copied ${(text.length / 1024).toFixed(0)} KB — ${s.localCount} local keys, ${s.records} IndexedDB records.`,
+                            "ok"
+                        );
+                    } else {
+                        setExportStatus("Clipboard blocked by the browser. Use the download instead.", "err");
+                    }
+                } catch (e) {
+                    setExportStatus(`Copy failed: ${e && e.message ? e.message : e}`, "err");
+                } finally { setExportBusy(false); }
+            }));
+
+            const sep = document.createElement("div");
+            sep.className = "ex-sep";
+            menu.appendChild(sep);
+
+            const head2 = document.createElement("div");
+            head2.className = "ex-head";
+            head2.textContent = "Restore";
+            menu.appendChild(head2);
+
+            const file = document.createElement("input");
+            file.type = "file";
+            file.accept = "application/json,.json";
+            file.style.display = "none";
+            file.onchange = async () => {
+                const chosen = file.files && file.files[0];
+                file.value = "";
+                if (!chosen) return;
+                await applyBackupText(await chosen.text());
+            };
+            menu.appendChild(file);
+
+            menu.appendChild(mkItem(ICON_EX_IMPORT, "Restore from file…", () => file.click()));
+
+            menu.appendChild(mkItem(ICON_EX_PASTE, "Restore from clipboard", async () => {
+                let text = "";
+                try {
+                    text = await navigator.clipboard.readText();
+                } catch (e) {
+                    setExportStatus("Clipboard read blocked. Use “Restore from file” instead.", "err");
+                    return;
+                }
+                await applyBackupText(text);
+            }));
+
+            const note = document.createElement("div");
+            note.className = "ex-note";
+            note.textContent = "";
+            menu.appendChild(note);
+
+            const status = document.createElement("div");
+            status.id = "export-status";
+            status.className = "ex-status";
+            menu.appendChild(status);
+
+            document.body.appendChild(menu);
+
+            document.addEventListener("mousedown", (e) => {
+                if (!isExportMenuOpen()) return;
+                const target = e.target instanceof Element ? e.target : null;
+                if (target && menu.contains(target)) return;
+                if (target && target.closest("#export-btn")) return;
+                closeExportMenu();
+            });
+            window.addEventListener("resize", closeExportMenu);
+
+            return menu;
+        }
+
+        async function applyBackupText(text) {
+            setExportBusy(true);
+            setExportStatus("Reading backup…");
+            let backup;
+            try {
+                backup = JSON.parse(text);
+            } catch (e) {
+                setExportStatus("That isn't valid backup JSON.", "err");
+                setExportBusy(false);
+                return;
+            }
+            if (!backup || backup.format !== BACKUP_FORMAT) {
+                setExportStatus("Not a Dancing Bunny backup file.", "err");
+                setExportBusy(false);
+                return;
+            }
+
+            const s = summarizeBackup(backup);
+            const ok = confirm(
+                `Restore this backup?\n\n` +
+                `Taken: ${backup.exportedAt || "unknown"}\n` +
+                `${s.localCount} localStorage keys, ${s.sessionCount} session keys, ${s.cookieCount} cookies\n` +
+                `${s.records} IndexedDB records in ${s.dbCount} databases\n\n` +
+                `This merges into your current data: only the games included above ` +
+                `are overwritten. Games not in this backup keep their saves.`
+            );
+            if (!ok) {
+                setExportStatus("Restore cancelled.");
+                setExportBusy(false);
+                return;
+            }
+
+            try {
+                setExportStatus("Restoring…");
+                const res = await restoreBackup(backup);
+                let msg = `Restored ${res.local} local keys and ${res.records} IndexedDB records across ${res.dbs} databases.`;
+                if (res.errors.length) msg += ` ${res.errors.length} item(s) failed: ${res.errors[0]}`;
+                setExportStatus(msg + " Reloading…", res.errors.length ? "err" : "ok");
+                setTimeout(() => location.reload(), res.errors.length ? 2500 : 1200);
+            } catch (e) {
+                setExportStatus(`Restore failed: ${e && e.message ? e.message : e}`, "err");
+            } finally { setExportBusy(false); }
+        }
+
+        function isExportMenuOpen() {
+            return !!document.getElementById("export-menu")?.classList.contains("open");
+        }
+
+        function closeExportMenu() {
+            document.getElementById("export-menu")?.classList.remove("open");
+        }
+
+        function openExportMenu() {
+            const btn = document.getElementById("export-btn");
+            const menu = ensureExportMenu();
+            setExportStatus("");
+            setExportBusy(false);
+            menu.classList.add("open");
+
+            if (!btn) return;
+            const anchor = btn.getBoundingClientRect();
+            const rect = menu.getBoundingClientRect();
+            const margin = 8;
+            let left = anchor.right - rect.width;
+            let top = anchor.bottom + 6;
+            left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin));
+            top = Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin));
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+        }
+
+        function toggleExportMenu() {
+            if (isExportMenuOpen()) closeExportMenu();
+            else openExportMenu();
+        }
+
+        function ensureExportButton() {
+            if (document.getElementById("export-btn")) return;
+            const btn = document.createElement("button");
+            btn.id = "export-btn";
+            btn.type = "button";
+            btn.innerHTML = ICON_EXPORT;
+            btn.title = "Export / restore all data";
+            btn.setAttribute("aria-label", btn.title);
+            btn.onclick = toggleExportMenu;
+            tabBar.appendChild(btn);
+        }
+
+        // New tabs land immediately to the right of Home, so the newest game is
+        // always the first thing after it; drag-reordering moves them from there.
+        function insertTabButton(button) {
+            const home = document.getElementById("tab-home");
+            tabBar.insertBefore(button, home ? home.nextSibling : tabBar.firstChild);
         }
 
         /* ---------------- Auto clicker ----------------
@@ -2042,15 +2998,9 @@
 
             if (idx !== -1) tabOrder.splice(idx, 1);
 
-            if (wasActive) {
-                let nextId = "home";
-                if (idx > 0 && tabOrder[idx - 1]) {
-                    nextId = tabOrder[idx - 1];
-                } else if (tabOrder.length > 0) {
-                    nextId = tabOrder[0];
-                }
-                activateTab(nextId);
-            }
+            // Closing the tab you're on always lands you back on Home rather
+            // than on whichever tab happened to be next to it.
+            if (wasActive) activateTab("home");
         }
 
         function createTabButton(id, title, closable) {
@@ -2075,6 +3025,213 @@
             return btn;
         }
 
+        /* ---------------- Drag to reorder tabs ----------------
+           Pointer-driven so the tab can be locked to the X axis (HTML5 DnD
+           gives no such control) and so the other tabs can slide with a
+           transition instead of jumping. Home stays pinned at index 0: it is
+           neither draggable nor a slot anything else can land on. */
+        const TAB_DRAG_THRESHOLD = 4;
+        let tabDrag = null;
+        let suppressTabClick = false;
+
+        function draggableTabButtons() {
+            return [...tabBar.querySelectorAll(".tab-btn")].filter(b => b.id !== "tab-home");
+        }
+
+        function tabBarGap() {
+            const gap = parseFloat(getComputedStyle(tabBar).columnGap);
+            return Number.isFinite(gap) ? gap : 0;
+        }
+
+        // tabOrder drives which tab gets focus after a close, so it has to
+        // follow the visual order.
+        function syncTabOrderFromDom() {
+            const ids = draggableTabButtons()
+                .map(b => b.id.slice(4))
+                .filter(id => tabs.has(id));
+            tabOrder.length = 0;
+            tabOrder.push(...ids);
+        }
+
+        function beginTabDrag(e, btn) {
+            const items = draggableTabButtons();
+            const index = items.indexOf(btn);
+            if (index === -1) return;
+
+            tabDrag = {
+                btn,
+                pointerId: e.pointerId,
+                startX: e.clientX,
+                startScroll: tabBar.scrollLeft,
+                fromIndex: index,
+                toIndex: index,
+                moved: false,
+                items: items.map(el => ({
+                    el,
+                    left: el.offsetLeft,
+                    width: el.offsetWidth
+                })),
+                step: btn.offsetWidth + tabBarGap()
+            };
+        }
+
+        function updateTabDrag(e) {
+            const d = tabDrag;
+            const dx = (e.clientX - d.startX) + (tabBar.scrollLeft - d.startScroll);
+
+            if (!d.moved) {
+                if (Math.abs(dx) < TAB_DRAG_THRESHOLD) return;
+                d.moved = true;
+                tabBar.classList.add("reordering");
+                d.btn.classList.add("dragging");
+                d.items.forEach(item => {
+                    if (item.el !== d.btn) item.el.classList.add("tab-sliding");
+                });
+                // Force a style flush so the first shift animates from the
+                // resting position instead of being batched with the class add.
+                void tabBar.offsetWidth;
+            }
+
+            // Locked to X, and kept inside the run of draggable tabs so it can
+            // never be dragged over Home or past the trailing controls.
+            const first = d.items[0];
+            const last = d.items[d.items.length - 1];
+            const me = d.items[d.fromIndex];
+            const min = first.left - me.left;
+            const max = (last.left + last.width - me.width) - me.left;
+            const clamped = Math.min(Math.max(dx, min), max);
+            d.btn.style.transform = `translateX(${clamped}px) scale(1.02)`;
+
+            /* Crossing is measured edge-to-center, not center-to-center: a tab
+               dragged right takes a slot once its right edge passes that
+               neighbour's midpoint (mirrored going left). Comparing centers
+               breaks whenever the dragged tab is wider than its neighbour --
+               the clamp above stops its center from ever reaching the
+               neighbour's, so the swap could only land on release. */
+            let target = d.fromIndex;
+            d.items.forEach((item, i) => {
+                if (i === d.fromIndex) return;
+                const itemCenter = item.left + item.width / 2;
+                if (i > d.fromIndex && clamped > itemCenter - me.left - me.width) {
+                    target = Math.max(target, i);
+                }
+                if (i < d.fromIndex && clamped < itemCenter - me.left) {
+                    target = Math.min(target, i);
+                }
+            });
+
+            d.toIndex = target;
+            // Applied every move, not just on a crossing: setting the same
+            // transform is a no-op, so in-flight slides are never restarted,
+            // but a slot can never be left un-shifted mid-drag either.
+            applyTabDragShifts();
+        }
+
+        function applyTabDragShifts() {
+            const d = tabDrag;
+            d.items.forEach((item, i) => {
+                if (i === d.fromIndex) return;
+                let shift = 0;
+                if (i > d.fromIndex && i <= d.toIndex) shift = -d.step;
+                else if (i < d.fromIndex && i >= d.toIndex) shift = d.step;
+                item.el.style.transform = shift ? `translateX(${shift}px)` : "";
+            });
+        }
+
+        function finishTabDrag(cancelled) {
+            const d = tabDrag;
+            tabDrag = null;
+            if (!d) return;
+
+            try { d.btn.releasePointerCapture(d.pointerId); } catch (e) { }
+
+            if (!d.moved) {
+                clearTabDragStyles(d);
+                return;
+            }
+
+            suppressTabClick = true;
+            const toIndex = cancelled ? d.fromIndex : d.toIndex;
+            const me = d.items[d.fromIndex];
+            const dest = d.items[toIndex];
+            const finalX = toIndex > d.fromIndex
+                ? (dest.left + dest.width - me.width) - me.left
+                : dest.left - me.left;
+
+            // Let the tab glide into its slot, then commit the reorder with the
+            // transforms cleared so nothing visibly jumps.
+            d.btn.classList.remove("dragging");
+            d.btn.classList.add("dropping");
+            d.btn.style.transform = `translateX(${finalX}px)`;
+
+            const commit = () => {
+                d.btn.removeEventListener("transitionend", onEnd);
+                clearTimeout(timer);
+                if (!cancelled && toIndex !== d.fromIndex) {
+                    const ref = toIndex > d.fromIndex
+                        ? d.items[toIndex].el.nextElementSibling
+                        : d.items[toIndex].el;
+                    tabBar.insertBefore(d.btn, ref);
+                    syncTabOrderFromDom();
+                }
+                clearTabDragStyles(d);
+            };
+            const onEnd = (ev) => { if (ev.propertyName === "transform") commit(); };
+            d.btn.addEventListener("transitionend", onEnd);
+            const timer = setTimeout(commit, 300);
+        }
+
+        function clearTabDragStyles(d) {
+            tabBar.classList.remove("reordering");
+            d.items.forEach(item => item.el.classList.add("tab-no-anim"));
+            d.btn.classList.remove("dragging", "dropping");
+            d.items.forEach(item => {
+                item.el.classList.remove("tab-sliding");
+                item.el.style.transform = "";
+            });
+            // Flush the cleared transforms before transitions are allowed back.
+            void tabBar.offsetWidth;
+            d.items.forEach(item => item.el.classList.remove("tab-no-anim"));
+        }
+
+        tabBar.addEventListener("pointerdown", (e) => {
+            if (e.button !== 0 || tabDrag) return;
+            suppressTabClick = false;
+            const btn = e.target.closest(".tab-btn");
+            if (!btn || btn.id === "tab-home") return;
+            if (e.target.closest(".tab-close")) return;
+            beginTabDrag(e, btn);
+            if (tabDrag) {
+                try { btn.setPointerCapture(e.pointerId); } catch (err) { }
+            }
+        });
+
+        tabBar.addEventListener("pointermove", (e) => {
+            if (!tabDrag || e.pointerId !== tabDrag.pointerId) return;
+            e.preventDefault();
+            updateTabDrag(e);
+        });
+
+        tabBar.addEventListener("pointerup", (e) => {
+            if (!tabDrag || e.pointerId !== tabDrag.pointerId) return;
+            finishTabDrag(false);
+        });
+
+        tabBar.addEventListener("pointercancel", (e) => {
+            if (!tabDrag || e.pointerId !== tabDrag.pointerId) return;
+            finishTabDrag(true);
+        });
+
+        // A drag ends over the tab, so the pointerup would otherwise activate it.
+        tabBar.addEventListener("click", (e) => {
+            if (!suppressTabClick) return;
+            suppressTabClick = false;
+            if (e.target.closest(".tab-btn")) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        }, true);
+
         function openLoadingTab(id, title, opts = {}) {
             ensureHomeTab();
             ensureMuteButton();
@@ -2086,7 +3243,7 @@
             }
 
             const button = createTabButton(id, title, true);
-            tabBar.insertBefore(button, tabBarAnchor());
+            insertTabButton(button);
 
             const panel = document.createElement("div");
             panel.className = "panel game-pane";
@@ -2101,7 +3258,7 @@
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
-            tabOrder.push(id);
+            tabOrder.unshift(id);
             if (opts.background) {
                 setTabStatus(id, "loading");
             } else {
@@ -2831,7 +3988,7 @@ ${icons}
             }
 
             const button = createTabButton(id, title, true);
-            tabBar.insertBefore(button, tabBarAnchor());
+            insertTabButton(button);
 
             const panel = document.createElement("div");
             panel.className = "panel game-pane";
@@ -2852,7 +4009,7 @@ ${icons}
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
-            tabOrder.push(id);
+            tabOrder.unshift(id);
             activateTab(id);
         }
 
@@ -2866,7 +4023,7 @@ ${icons}
             }
 
             const button = createTabButton(id, title, true);
-            tabBar.insertBefore(button, tabBarAnchor());
+            insertTabButton(button);
 
             const panel = document.createElement("div");
             panel.className = "panel game-pane static-pane";
@@ -2907,7 +4064,7 @@ ${icons}
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
-            tabOrder.push(id);
+            tabOrder.unshift(id);
             activateTab(id);
 
             const code = panel.querySelector("#runner-code");
