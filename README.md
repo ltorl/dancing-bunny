@@ -6,8 +6,10 @@ A lightweight browser-based games network with multiple launch methods, tab cloa
 
 <br>
 <br>
+<br>
+<br>
 
----
+───────────────────────────────────────────────────────────────
 
 ## Overview
 
@@ -25,27 +27,31 @@ The project includes:
 
 The project currently contains access to over **2608 games**.
 
----
+───────────────────────────────────────────────────────────────
 
 <br>
 <br>
+<br>
+<br>
 
----
+───────────────────────────────────────────────────────────────
 
 ## Demo
 
 # https://ltorl.github.io/dancing-bunny
 
----
+───────────────────────────────────────────────────────────────
 
 <br>
 <br>
+<br>
+<br>
 
-----
+───────────────────────────────────────────────────────────────
 
 ## Unblocking Methods
 
-<br>
+---
 
 ### NPM svg
 
@@ -55,8 +61,7 @@ https://cdn.jsdelivr.net/npm/db-gn@latest/index.svg
 
 This probably wont be blocked because it would break real school sites
 
-<br>
-<br>
+---
 
 ### HTML
 
@@ -78,8 +83,7 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/index.html
    * OneCompiler
 4. Run the page
 
-<br>
-<br>
+---
 
 ### Bookmarklet
 
@@ -95,8 +99,7 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/bookmarkle
 4. Paste the code into the bookmark URL field
 5. Run from any webpage (ex: google.com)
 
-<br>
-<br>
+---
 
 ### Data URi
 
@@ -110,16 +113,17 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/datauri.tx
 2. Copy the link
 4. Paste into URL bar
 
----
+───────────────────────────────────────────────────────────────
 
 <br>
 <br>
+<br>
+<br>
 
----
+───────────────────────────────────────────────────────────────
 
 ## License
 
 Licensed under the GNU General Public License v3.0.
 
----
-
+───────────────────────────────────────────────────────────────
