@@ -4303,7 +4303,7 @@ ${icons}
             activateTab("home"); saveMuteAndApply(); document.title = "New tab";
 
             const container = document.getElementById("sections-container");
-            container.textContent = "Loading games...";
+            container.textContent = "";
             const list = await loadGameList();
             migrateLegacyNames(list);
             files = list;
