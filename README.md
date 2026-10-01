@@ -56,7 +56,7 @@ The project currently contains access to over **2608 games**.
 ### CDN svg
 
 ```text
-https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny@latest/index.svg
+https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny/index.svg
 ```
 
 This probably wont be blocked because it would break real school sites
