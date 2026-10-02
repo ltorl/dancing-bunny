@@ -3103,12 +3103,42 @@
             return tab;
         }
 
-        function injectBaseHref(html, baseHref) {
-            if (/<base\s/i.test(html)) return html;
+        function rewriteLocationReads(html) {
+            const read = /(^|[^\w$.])(?:(?:window|self|document|globalThis)\s*\.\s*)?location\s*\.\s*href\b(?!\s*(?:=(?!=)|\+=))/g;
+            return html.replace(
+                /(<script\b(?![^>]*\bsrc\s*=)[^>]*>)([\s\S]*?)(<\/script>)/gi,
+                (match, open, code, close) => open + code.replace(read, "$1__DB_HREF__") + close
+            );
+        }
+
+        function injectBaseHref(html, baseHref, pageUrl = baseHref) {
+            const urlFix = `<script>
+(function() {
+  var BASE = ${JSON.stringify(baseHref)};
+  var HREF = ${JSON.stringify(pageUrl)};
+  var NativeURL = window.URL;
+  window.__DB_HREF__ = HREF;
+  try { Object.defineProperty(document, "URL", { configurable: true, get: function() { return HREF; } }); } catch (e) {}
+  try { Object.defineProperty(document, "documentURI", { configurable: true, get: function() { return HREF; } }); } catch (e) {}
+  function fixBase(base) {
+    return (base !== undefined && String(base).indexOf("about:") === 0) ? BASE : base;
+  }
+  window.URL = class extends NativeURL {
+    constructor(url, base) {
+      if (arguments.length < 2) super(url);
+      else super(url, fixBase(base));
+    }
+  };
+  if (NativeURL.canParse) window.URL.canParse = function(url, base) { return NativeURL.canParse(url, fixBase(base)); };
+  if (NativeURL.parse) window.URL.parse = function(url, base) { return NativeURL.parse(url, fixBase(base)); };
+})();
+<\/script>`;
+            html = rewriteLocationReads(html);
+            const tags = /<base\s/i.test(html) ? urlFix : `<base href="${baseHref}">${urlFix}`;
             if (/<head[^>]*>/i.test(html)) {
-                return html.replace(/<head[^>]*>/i, match => `${match}<base href="${baseHref}">`);
+                return html.replace(/<head[^>]*>/i, match => `${match}${tags}`);
             }
-            return `<!DOCTYPE html><html><head><base href="${baseHref}"></head><body>${html}</body></html>`;
+            return `<!DOCTYPE html><html><head>${tags}</head><body>${html}</body></html>`;
         }
 
         function injectMuteSupport(html, muted = false) {
@@ -3552,7 +3582,7 @@ ${icons}
             }
 
             let html = injectOffTabSupport(injectAutoclickSupport(injectMuteSupport(source.text, isMuted)), bgRunEnabled);
-            html = injectBaseHref(html, source.base);
+            html = injectBaseHref(html, source.base, `${source.base}${encodeURIComponent(normalizeFileName(file))}`);
 
             if (loading) loading.remove();
             const iframe = win.document.createElement("iframe");
@@ -3643,7 +3673,7 @@ ${icons}
                 if (!text) throw new Error("All proxy servers failed, were skipped, or the file does not exist.");
 
                 let html = injectOffTabSupport(injectAutoclickSupport(injectMuteSupport(text, isMuted)), bgRunEnabled);
-                html = injectBaseHref(html, successBase);
+                html = injectBaseHref(html, successBase, `${successBase}${encoded}`);
 
                 tab.panel.innerHTML = "";
                 const iframe = document.createElement("iframe");
