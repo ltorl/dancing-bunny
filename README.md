@@ -122,6 +122,19 @@ https://raw.githubusercontent.com/ltorl/dancing-bunny/refs/heads/main/datauri.tx
 
 ────────────────────────────────────────────────────
 
+## Games Source: https://github.com/ltorl/dancing-bunny-games/
+
+#### if you are using these games for your site please credit <ins>with a link</ins>
+
+────────────────────────────────────────────────────
+
+<br>
+<br>
+<br>
+<br>
+
+────────────────────────────────────────────────────
+
 ## License
 
 Licensed under the GNU General Public License v3.0.
