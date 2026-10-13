@@ -943,17 +943,16 @@
         .letter-section {
             margin-bottom: 40px;
             padding: 0 20px;
-            max-width: 900px;
+            max-width: 1100px;
             margin-left: auto;
             margin-right: auto;
             min-height: 100px;
         }
 
         .buttons-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 14px;
         }
 
         input[type="button"] {
@@ -984,35 +983,109 @@
         }
 
         .game-row {
-            display: flex;
-            align-items: stretch;
-            gap: 8px;
-            width: 100%;
-            max-width: 600px;
+            position: relative;
+            min-width: 0;
         }
 
-        .game-row input[type="button"] {
-            flex: 1;
-            max-width: none;
+        .game-tile {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 0;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #561a86;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .game-tile:hover,
+        .game-tile:focus-visible {
+            transform: translateY(-3px);
+            background: #a369d3;
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+            outline: none;
+        }
+
+        .game-tile:active {
+            transform: translateY(0);
+        }
+
+        .game-thumb {
+            position: relative;
+            display: block;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .game-thumb img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .game-thumb img.loaded {
+            opacity: 1;
+        }
+
+        .game-thumb::before {
+            content: attr(data-letter);
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-size: 52px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.18);
+        }
+
+        .game-name {
+            display: block;
+            padding: 8px 10px 9px;
+            font-size: 14px;
+            line-height: 1.25;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .star-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            z-index: 1;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 55px;
-            width: 55px;
+            height: 34px;
+            width: 34px;
             box-sizing: border-box;
-            font-size: 1.7rem;
+            font-size: 1.2rem;
             line-height: 0;
-            padding: 0 0 6px 0;
-            background: none;
+            padding: 0 0 4px 0;
+            background: rgba(0, 0, 0, 0.55);
             border: 2px solid rgba(255, 255, 255, 0.25);
             border-radius: 8px;
-            color: rgba(255, 255, 255, 0.35);
+            color: rgba(255, 255, 255, 0.6);
             cursor: pointer;
+            opacity: 0;
             transition: all 0.2s ease;
-            flex-shrink: 0;
+        }
+
+        .game-row:hover .star-btn,
+        .star-btn:focus-visible,
+        .star-btn.starred {
+            opacity: 1;
         }
 
         .star-btn:hover,
@@ -1022,7 +1095,13 @@
         }
 
         .star-btn.starred {
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(40, 32, 0, 0.75);
+        }
+
+        @media (hover: none) {
+            .star-btn {
+                opacity: 1;
+            }
         }
 
 
@@ -1273,6 +1352,13 @@
             `https://api.allorigins.win/raw?url=https://raw.githubusercontent.com/${GAMES_REPO}/${GAMES_BRANCH}/`,
             `https://api.codetabs.com/v1/proxy/?quest=https://raw.githubusercontent.com/${GAMES_REPO}/${GAMES_BRANCH}/`,
             `https://corsproxy.io/?https://raw.githubusercontent.com/${GAMES_REPO}/${GAMES_BRANCH}/`
+        ];
+        const IMAGES_REPO = "ltorl/dancing-bunny-images";
+        const IMAGES_BRANCH = "main";
+        const IMAGE_BASES = [
+            `https://cdn.jsdelivr.net/gh/${IMAGES_REPO}@${IMAGES_BRANCH}/`,
+            `https://raw.githubusercontent.com/${IMAGES_REPO}/${IMAGES_BRANCH}/`,
+            `https://cdn.statically.io/gh/${IMAGES_REPO}/${IMAGES_BRANCH}/`
         ];
         const GAME_LIST_CACHE_KEY = "dancing-bunny-gamelist-v1";
         const STAR_KEY = "dancing-bunny-starred-v1";
@@ -3984,11 +4070,38 @@ ${icons}
                 saveStarred(); syncStarButtons(); renderFavoritesSection();
             };
 
-            const btn = document.createElement("input");
-            btn.type = "button"; btn.value = displayNameFromFile(file);
+            const name = displayNameFromFile(file);
+            row.dataset.name = name.toLowerCase();
+
+            const btn = document.createElement("button");
+            btn.type = "button"; btn.className = "game-tile";
             bindGameLauncher(btn, file);
 
-            row.appendChild(starBtn); row.appendChild(btn); return row;
+            const thumb = document.createElement("span");
+            thumb.className = "game-thumb";
+            thumb.dataset.letter = name.charAt(0).toUpperCase();
+            thumb.appendChild(makeGameImage(file));
+
+            const label = document.createElement("span");
+            label.className = "game-name"; label.textContent = name;
+
+            btn.appendChild(thumb); btn.appendChild(label);
+            row.appendChild(btn); row.appendChild(starBtn); return row;
+        }
+
+        function makeGameImage(file) {
+            const encoded = encodeURIComponent(`${displayNameFromFile(file)}.png`);
+            const img = document.createElement("img");
+            img.alt = ""; img.loading = "lazy"; img.decoding = "async"; img.draggable = false;
+            let baseIndex = 0;
+            img.onload = () => img.classList.add("loaded");
+            img.onerror = () => {
+                baseIndex++;
+                if (baseIndex < IMAGE_BASES.length) img.src = IMAGE_BASES[baseIndex] + encoded;
+                else img.remove();
+            };
+            img.src = IMAGE_BASES[0] + encoded;
+            return img;
         }
 
         function syncStarButtons() {
@@ -4138,8 +4251,7 @@ ${icons}
                 const rows = section.querySelectorAll(".game-row");
                 let hasVisibleRows = false;
                 rows.forEach(row => {
-                    const btn = row.querySelector('input[type="button"]');
-                    const text = btn ? btn.value.toLowerCase() : "";
+                    const text = row.dataset.name || "";
                     const match = text.includes(filter);
                     row.style.display = match ? "" : "none";
                     if (match) hasVisibleRows = true;
