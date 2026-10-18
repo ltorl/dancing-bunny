@@ -58,6 +58,10 @@ The project currently contains access to over **2608 games**.
 ```text
 https://cdn.jsdelivr.net/gh/ltorl/dancing-bunny/index.svg
 ```
+OR
+```text
+https://cdn.jsdelivr.net/npm/db-gn/index.svg
+```
 
 This probably wont be blocked because it would break real school sites
 
