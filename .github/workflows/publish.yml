@@ -45,7 +45,7 @@ jobs:
 
       - name: Commit updated version
         run: |
-          git add package.json package-lock.json
+          git add package.json
           git commit -m "chore: release v${{ steps.version.outputs.version }}"
           git push origin HEAD:main
 
