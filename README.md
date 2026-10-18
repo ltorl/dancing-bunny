@@ -1,6 +1,6 @@
 ![Dancing Bunny](animation.gif)
 
-# Dancing Bunny Games Network
+<h1>Dancing Bunny Games Network</h1>
 
 A lightweight browser-based games network with multiple launch methods, tab cloaking, bookmarklets, Data URI launching, favorites, search, and a multi-tab interface.
 
