@@ -1,4 +1,4 @@
-![Dancing Bunny](animation.gif)
+<img width="800" height="200" alt="animation" src="https://github.com/user-attachments/assets/16a0a5b2-b062-4f64-9787-852ea7cc1d61" />
 
 <h1>Dancing Bunny Games Network</h1>
 
