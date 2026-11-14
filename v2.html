@@ -702,6 +702,10 @@
             width: 100%;
         }
 
+        #sidebar-featured {
+            font-size: 16px;
+        }
+
         .sidebar-btn:hover {
             background: #a369d3;
             transform: scale(1.04);
@@ -1366,6 +1370,8 @@
         const RECENT_KEY = "dancing-bunny-recent-v1";
         const BGRUN_KEY = "dancing-bunny-bgrun-v1";
         const RECENT_MAX = 15;
+        const FEATURED_CACHE_KEY = "dancing-bunny-featured-v1";
+        let featured = [];
 
         let bgRunEnabled = true;
         try {
@@ -4168,6 +4174,66 @@ ${icons}
             filterGames();
         }
 
+        async function fetchFeaturedList() {
+            const bases = [`https://raw.githubusercontent.com/${GAMES_REPO}/${GAMES_BRANCH}/`, ...GAME_BASES];
+            for (const base of [...new Set(bases)]) {
+                try {
+                    const response = await fetch(base + "featured.json", { cache: "no-cache" });
+                    if (!response.ok) continue;
+                    const list = await response.json();
+                    if (!Array.isArray(list)) continue;
+                    const names = list.filter(n => typeof n === "string");
+                    try { localStorage.setItem(FEATURED_CACHE_KEY, JSON.stringify(names)); } catch (e) { }
+                    return names;
+                } catch (e) { }
+            }
+            try {
+                const cached = JSON.parse(localStorage.getItem(FEATURED_CACHE_KEY) || "[]");
+                if (Array.isArray(cached)) return cached.filter(n => typeof n === "string");
+            } catch (e) { }
+            return [];
+        }
+
+        function resolveFeaturedFiles(names) {
+            if (!Array.isArray(files)) return [];
+            const byName = new Map();
+            files.forEach(f => {
+                byName.set(f.toLowerCase(), f);
+                byName.set(displayNameFromFile(f).toLowerCase(), f);
+            });
+            const resolved = names.map(n => byName.get(n.toLowerCase())).filter(Boolean);
+            return [...new Set(resolved)];
+        }
+
+        function renderFeaturedSection() {
+            const container = document.getElementById("sections-container");
+            if (!container) return;
+
+            const existing = document.getElementById("section-featured");
+            if (existing) existing.remove();
+
+            const featuredFiles = resolveFeaturedFiles(featured);
+            const featuredSidebarBtn = document.getElementById("sidebar-featured");
+            if (featuredSidebarBtn) featuredSidebarBtn.style.opacity = featuredFiles.length > 0 ? "1" : "0.3";
+
+            if (featuredFiles.length === 0) return;
+
+            const section = document.createElement("div");
+            section.className = "letter-section"; section.id = "section-featured";
+
+            const header = document.createElement("div");
+            header.className = "letter-header"; header.textContent = "Featured"; section.appendChild(header);
+
+            const buttonsContainer = document.createElement("div");
+            buttonsContainer.className = "buttons-container";
+            featuredFiles.forEach(file => buttonsContainer.appendChild(makeGameRow(file)));
+            section.appendChild(buttonsContainer);
+
+            container.insertBefore(section, document.getElementById("section-A"));
+
+            filterGames();
+        }
+
         function generateSidebar(allChars, filesByChar) {
             const sidebar = document.getElementById("sidebar"); sidebar.innerHTML = "";
 
@@ -4193,6 +4259,15 @@ ${icons}
                 if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
             };
             sidebar.appendChild(recentBtn);
+
+            const featuredBtn = document.createElement("button");
+            featuredBtn.className = "sidebar-btn"; featuredBtn.id = "sidebar-featured"; featuredBtn.textContent = "featured";
+            featuredBtn.style.opacity = resolveFeaturedFiles(featured).length > 0 ? "1" : "0.3";
+            featuredBtn.onclick = () => {
+                const section = document.getElementById("section-featured");
+                if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+            };
+            sidebar.appendChild(featuredBtn);
 
             allChars.forEach((char) => {
                 if (char === "Search") return;
@@ -4235,7 +4310,7 @@ ${icons}
                 section.appendChild(buttonsContainer); container.appendChild(section);
             });
 
-            generateSidebar(sidebarChars, filesByChar); renderFavoritesSection(); renderRecentSection();
+            generateSidebar(sidebarChars, filesByChar); renderFavoritesSection(); renderRecentSection(); renderFeaturedSection();
         }
 
         function filterGames() {
@@ -4446,11 +4521,17 @@ ${icons}
 
             const container = document.getElementById("sections-container");
             container.textContent = "";
+            const featuredPromise = fetchFeaturedList();
             const list = await loadGameList();
             migrateLegacyNames(list);
             files = list;
             generateAllSections();
-            if (files.length === 0) container.textContent = "Couldn't load the game list. Try refreshing.";
+            if (files.length === 0) {
+                container.textContent = "Couldn't load the game list. Try refreshing.";
+                return;
+            }
+            featured = await featuredPromise;
+            renderFeaturedSection();
         }
         init();
     </script>
