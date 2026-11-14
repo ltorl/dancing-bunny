@@ -3673,7 +3673,7 @@ ${icons}
             if (loading) loading.remove();
             const iframe = win.document.createElement("iframe");
             iframe.srcdoc = html;
-            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock");
             iframe.referrerPolicy = "no-referrer";
             win.document.body.appendChild(iframe);
 
@@ -3765,7 +3765,7 @@ ${icons}
                 const iframe = document.createElement("iframe");
                 iframe.className = "game-frame";
                 iframe.srcdoc = html;
-                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock");
                 iframe.referrerPolicy = "no-referrer";
                 applyMuteToIframe(iframe);
                 tab.panel.appendChild(iframe);
@@ -3868,7 +3868,7 @@ ${icons}
 
             const iframe = win.document.createElement("iframe");
             iframe.srcdoc = prepared;
-            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock");
             iframe.referrerPolicy = "no-referrer";
             win.document.body.appendChild(iframe);
 
@@ -3891,7 +3891,7 @@ ${icons}
                 iframe.className = "game-frame";
                 iframe.setAttribute(
                     "sandbox",
-                    "allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                    "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock"
                 );
                 iframe.referrerPolicy = "no-referrer";
                 iframe.srcdoc = prepared;
@@ -3912,7 +3912,7 @@ ${icons}
             iframe.className = "game-frame";
             iframe.setAttribute(
                 "sandbox",
-                "allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock"
             );
             iframe.referrerPolicy = "no-referrer";
             iframe.srcdoc = prepared;
@@ -4304,7 +4304,7 @@ ${icons}
                 tab.panel.innerHTML = "";
                 const iframe = document.createElement("iframe");
                 iframe.className = "game-frame";
-                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+                iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock");
                 iframe.referrerPolicy = "no-referrer";
                 applyMuteToIframe(iframe);
                 iframe.allow = "autoplay 'none'; camera 'none'; microphone 'none'";
@@ -4352,7 +4352,7 @@ ${icons}
             tab.panel.innerHTML = "";
             const iframe = document.createElement("iframe");
             iframe.className = "game-frame"; iframe.src = url;
-            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals");
+            iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-pointer-lock");
             iframe.referrerPolicy = "no-referrer";
             applyMuteToIframe(iframe);
             iframe.allow = "autoplay 'none'; camera 'none'; microphone 'none'";
