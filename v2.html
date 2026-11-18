@@ -225,6 +225,7 @@
             transform: none;
         }
 
+        #rebind-btn,
         #autoclick-btn,
         #refresh-favicon-btn,
         #bgrun-btn,
@@ -244,15 +245,62 @@
             padding: 0;
         }
 
-        #autoclick-btn {
+        #share-wrap {
+            margin-left: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            flex: 0 0 auto;
+        }
+
+        .share-hint {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: 0.3px;
+            color: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        #share-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 14px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 22px;
+            white-space: nowrap;
+        }
+
+        #share-link:hover {
+            text-decoration: underline;
+        }
+
+        #share-wrap.share-hidden {
+            display: none;
+        }
+
+        /* First control button sits right after the share link (or takes its place when hidden) */
+        #share-wrap.share-hidden ~ #rebind-btn {
             margin-left: auto;
         }
 
+        #autoclick-btn,
         #refresh-favicon-btn,
         #bgrun-btn,
         #mute-btn,
         #export-btn {
             margin-left: 6px;
+        }
+
+        #rebind-btn.active {
+            background-color: rgba(176, 0, 230, 0.3);
+            border-color: rgba(214, 140, 255, 0.7);
+            color: #e2b3ff;
         }
 
         #bgrun-btn.off {
@@ -261,6 +309,7 @@
             color: #ff8b8b;
         }
 
+        #rebind-btn svg,
         #autoclick-btn svg,
         #refresh-favicon-btn svg,
         #bgrun-btn svg,
@@ -605,6 +654,228 @@
             padding: 9px 10px;
             font-size: 14px;
             color: rgba(255, 255, 255, 0.55);
+        }
+
+        #rebind-menu {
+            position: fixed;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 260px;
+            max-width: 340px;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(30, 26, 46, 0.97);
+            border: 2px solid rgba(176, 0, 230, 0.45);
+            border-radius: 10px;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        #rebind-menu.open {
+            display: flex;
+        }
+
+        #rebind-menu .rb-title {
+            font-size: 15px;
+            font-weight: 700;
+            padding: 2px 2px 0;
+        }
+
+        #rebind-menu .rb-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 0 2px 4px;
+            line-height: 1.35;
+        }
+
+        #rebind-menu .rb-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        #rebind-menu .rb-toggle-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        #rebind-menu .rb-toggle-label {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        #rebind-menu .rb-toggle-hint {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        #rebind-menu .ac-switch {
+            flex: none;
+            appearance: none;
+            border: 0;
+            width: 34px;
+            height: 18px;
+            padding: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+
+        #rebind-menu .ac-switch.on {
+            background: rgba(0, 220, 120, 0.85);
+        }
+
+        #rebind-menu .ac-switch.locked {
+            cursor: default;
+            opacity: 0.55;
+        }
+
+        #rebind-menu .ac-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.12s ease;
+        }
+
+        #rebind-menu .ac-switch.on .ac-knob {
+            transform: translateX(16px);
+        }
+
+        #rebind-menu .ac-switch:active .ac-knob {
+            width: 15px;
+        }
+
+        #rebind-menu .rb-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        #rebind-menu .rb-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px 4px 8px 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        #rebind-menu .rb-row-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #rebind-menu .rb-row .rb-toggle {
+            background: none;
+            padding: 0 6px 0 2px;
+        }
+
+        #rebind-menu .rb-row .rb-toggle-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        #rebind-menu .rb-map {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+
+        #rebind-menu .rb-key {
+            display: inline-block;
+            min-width: 26px;
+            text-align: center;
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.35);
+            font-weight: 700;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        #rebind-menu .rb-arrow {
+            color: rgba(214, 140, 255, 0.9);
+            font-weight: 700;
+        }
+
+        #rebind-menu .rb-remove {
+            appearance: none;
+            border: 0;
+            background: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: inherit;
+            font-size: 18px;
+            line-height: 1;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #rebind-menu .rb-remove:hover {
+            background: rgba(255, 60, 60, 0.3);
+            color: #fff;
+        }
+
+        #rebind-menu .rb-add {
+            appearance: none;
+            border: 1px solid rgba(176, 0, 230, 0.5);
+            background: rgba(176, 0, 230, 0.2);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        #rebind-menu .rb-add:hover {
+            background: rgba(176, 0, 230, 0.4);
+        }
+
+        #rebind-menu .rb-capture {
+            text-align: center;
+            padding: 12px 10px;
+            border-radius: 8px;
+            border: 1px dashed rgba(214, 140, 255, 0.7);
+            background: rgba(176, 0, 230, 0.12);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        #rebind-menu .rb-capture small {
+            display: block;
+            margin-top: 6px;
+            font-weight: normal;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #rebind-menu .rb-empty {
+            padding: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.55);
+            text-align: center;
         }
 
         .autoclick-overlay {
@@ -1369,6 +1640,7 @@
         const MUTE_KEY = "dancing-bunny-muted-v1";
         const RECENT_KEY = "dancing-bunny-recent-v1";
         const BGRUN_KEY = "dancing-bunny-bgrun-v1";
+        const REBIND_KEY = "dancing-bunny-rebind-v1";
         const RECENT_MAX = 15;
         const FEATURED_CACHE_KEY = "dancing-bunny-featured-v1";
         let featured = [];
@@ -1377,6 +1649,24 @@
         try {
             const stored = localStorage.getItem(BGRUN_KEY);
             if (stored !== null) bgRunEnabled = JSON.parse(stored) !== false;
+        } catch (e) { }
+
+        // Controls rebinding — site-wide key remapping shared by the main page and every game iframe.
+        // { bindings: [ { from: {code,key,keyCode,location}, to: {code,key,keyCode,location}, cancel: bool, swap: bool } ] }
+        // cancel per binding: true = only the new key is sent; false = both the original and new key are sent.
+        // swap per binding: true = also remap the reverse direction (to -> from).
+        let rebindConfig = { bindings: [] };
+        try {
+            const stored = JSON.parse(localStorage.getItem(REBIND_KEY) || "null");
+            if (stored && typeof stored === "object") {
+                // Migrate legacy global cancelInput to a per-binding default.
+                const legacyCancel = stored.cancelInput !== false;
+                if (Array.isArray(stored.bindings)) {
+                    rebindConfig.bindings = stored.bindings
+                        .filter(b => b && b.from && b.to && b.from.code && b.to.code)
+                        .map(b => ({ from: b.from, to: b.to, cancel: b.cancel !== undefined ? b.cancel !== false : legacyCancel, swap: b.swap === true }));
+                }
+            }
         } catch (e) { }
 
         let recent = [];
@@ -1471,6 +1761,75 @@
             <path d="M5 3.2l8.6 8.6h-4l2.2 5.4-1.9.8-2.2-5.4-2.7 2.9z" fill="currentColor" stroke-linejoin="round"/>
             <path d="M18 4.5v6M15 7.5h6"/>
         </svg>`;
+
+        const SHARE_URL = "https://tinu.be/dbgn";
+        const SHARE_LABEL = "tinu.be/dbgn";
+        // Hide the share link once this many game tabs are open to keep the bar from crowding.
+        const SHARE_MAX_TABS = 3;
+
+        const ICON_SHARE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>
+        </svg>`;
+
+        function ensureShareButton() {
+            if (document.getElementById("share-link")) return;
+            const a = document.createElement("a");
+            a.id = "share-link";
+            a.href = SHARE_URL;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.title = "Share this site: " + SHARE_LABEL;
+            a.setAttribute("aria-label", a.title);
+            a.textContent = SHARE_LABEL;
+            const wrap = document.createElement("div");
+            wrap.id = "share-wrap";
+            const hint = document.createElement("div");
+            hint.className = "share-hint";
+            hint.textContent = "drag to bookmarks";
+            wrap.appendChild(hint);
+            wrap.appendChild(a);
+            tabBar.appendChild(wrap);
+            updateShareVisibility();
+        }
+
+        function updateShareVisibility() {
+            const wrap = document.getElementById("share-wrap");
+            if (!wrap) return;
+            wrap.classList.toggle("share-hidden", tabs.size > SHARE_MAX_TABS);
+        }
+
+        const ICON_REBIND = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2.5" y="6" width="19" height="12" rx="2.5"/>
+            <path d="M6 9.5h.01M9.5 9.5h.01M13 9.5h.01M16.5 9.5h.01M7.5 13h9"/>
+            <path d="M16 3.5l3 2.5-3 2.5" />
+        </svg>`;
+
+        function ensureRebindButton() {
+            if (document.getElementById("rebind-btn")) return;
+            const btn = document.createElement("button");
+            btn.id = "rebind-btn";
+            btn.type = "button";
+            btn.innerHTML = ICON_REBIND;
+            btn.title = "Rebind Controls";
+            btn.setAttribute("aria-label", "Rebind Controls");
+            btn.onclick = toggleRebindMenu;
+            tabBar.appendChild(btn);
+            updateRebindButtonState();
+        }
+
+        function updateRebindButtonState() {
+            const btn = document.getElementById("rebind-btn");
+            if (!btn) return;
+            const n = rebindConfig.bindings.length;
+            btn.classList.toggle("active", n > 0);
+            btn.title = n > 0
+                ? `Rebind Controls (${n} active) — remaps keys across the whole site`
+                : "Rebind Controls — remap keys across the whole site";
+            btn.setAttribute("aria-label", btn.title);
+        }
 
         function ensureAutoclickButton() {
             if (document.getElementById("autoclick-btn")) return;
@@ -1570,6 +1929,8 @@
         }
 
         function ensureMuteButton() {
+            ensureShareButton();
+            ensureRebindButton();
             ensureAutoclickButton();
             ensureRefreshFaviconButton();
             ensureBackgroundRunButton();
@@ -2827,6 +3188,344 @@
             cancelArmingAutoclickers();
         });
 
+        /* ============================ Controls Rebinding ============================ */
+
+        // True while the user is picking keys for a new binding, so neither the remap
+        // engine nor other shortcut handlers act on those keystrokes.
+        let rebindCapturing = false;
+
+        function saveRebindConfig() {
+            try { localStorage.setItem(REBIND_KEY, JSON.stringify(rebindConfig)); } catch (e) { }
+        }
+
+        // Push the current config to every open game iframe (live, no reload needed).
+        function broadcastRebindConfig() {
+            document.querySelectorAll("iframe").forEach(frame => {
+                try {
+                    frame.contentWindow?.postMessage({ type: "REBIND_CONFIG", config: rebindConfig }, "*");
+                    if (typeof frame.contentWindow?.__setRebindConfig === "function") {
+                        frame.contentWindow.__setRebindConfig(rebindConfig);
+                    }
+                } catch (e) { }
+            });
+        }
+
+        function applyRebindState() {
+            saveRebindConfig();
+            broadcastRebindConfig();
+            updateRebindButtonState();
+            refreshRebindMenu();
+        }
+
+        function keyInfoFromEvent(e) {
+            return {
+                code: e.code || "",
+                key: e.key || "",
+                keyCode: e.keyCode || e.which || 0,
+                location: e.location || 0
+            };
+        }
+
+        function rebindKeyLabel(k) {
+            if (!k) return "?";
+            const code = k.code || "";
+            const named = {
+                ArrowLeft: "←", ArrowRight: "→", ArrowUp: "↑", ArrowDown: "↓",
+                Space: "Space", Enter: "Enter", NumpadEnter: "Enter", Escape: "Esc",
+                Backspace: "⌫", Delete: "Del", Tab: "Tab", CapsLock: "Caps",
+                ShiftLeft: "Shift", ShiftRight: "Shift", ControlLeft: "Ctrl", ControlRight: "Ctrl",
+                AltLeft: "Alt", AltRight: "Alt", MetaLeft: "Meta", MetaRight: "Meta",
+                Home: "Home", End: "End", PageUp: "PgUp", PageDown: "PgDn",
+                Minus: "-", Equal: "=", BracketLeft: "[", BracketRight: "]", Backslash: "\\",
+                Semicolon: ";", Quote: "'", Comma: ",", Period: ".", Slash: "/", Backquote: "`"
+            };
+            if (named[code]) return named[code];
+            let m;
+            if ((m = /^Key([A-Z])$/.exec(code))) return m[1];
+            if ((m = /^Digit(\d)$/.exec(code))) return m[1];
+            if ((m = /^Numpad(\d)$/.exec(code))) return "Num " + m[1];
+            if ((m = /^F(\d{1,2})$/.exec(code))) return code;
+            if (k.key && k.key.length === 1) return k.key.toUpperCase();
+            return k.key || code || "?";
+        }
+
+        // --- Parent-page remap engine (the "whole site" part, for the home page itself) ---
+        (function installParentRemap() {
+            function editable(el) {
+                if (!el) return false;
+                const tag = (el.tagName || "").toUpperCase();
+                if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+                return !!el.isContentEditable;
+            }
+            function makeEvent(type, k) {
+                const ev = new KeyboardEvent(type, {
+                    key: k.key, code: k.code, location: k.location || 0,
+                    bubbles: true, cancelable: true, composed: true, view: window, repeat: false
+                });
+                try { Object.defineProperty(ev, "keyCode", { get: () => k.keyCode || 0 }); } catch (e) { }
+                try { Object.defineProperty(ev, "which", { get: () => k.keyCode || 0 }); } catch (e) { }
+                ev.__remap = true;
+                return ev;
+            }
+            function handle(e) {
+                if (e.__remap || rebindCapturing) return;
+                if (!rebindConfig.bindings.length) return;
+                if (editable(e.target)) return;
+                let to = null, cancel = true;
+                for (const b of rebindConfig.bindings) {
+                    if (b.from.code === e.code) { to = b.to; cancel = b.cancel !== false; break; }
+                    if (b.swap && b.to.code === e.code) { to = b.from; cancel = b.cancel !== false; break; }
+                }
+                if (!to) return;
+                const target = e.target || document.activeElement || document.body || document.documentElement;
+                try { target.dispatchEvent(makeEvent(e.type, to)); } catch (err) { }
+                if (cancel) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    e.stopPropagation();
+                }
+            }
+            document.addEventListener("keydown", handle, true);
+            document.addEventListener("keyup", handle, true);
+        })();
+
+        // --- Rebind menu UI ---
+        function ensureRebindMenu() {
+            let menu = document.getElementById("rebind-menu");
+            if (menu) return menu;
+
+            menu = document.createElement("div");
+            menu.id = "rebind-menu";
+            menu.setAttribute("role", "menu");
+            document.body.appendChild(menu);
+
+            document.addEventListener("mousedown", (e) => {
+                if (!isRebindMenuOpen()) return;
+                if (rebindCapturing) return;
+                if (menu.contains(e.target)) return;
+                if (e.target.closest("#rebind-btn")) return;
+                closeRebindMenu();
+            });
+            window.addEventListener("resize", closeRebindMenu);
+
+            return menu;
+        }
+
+        function isRebindMenuOpen() {
+            return !!document.getElementById("rebind-menu")?.classList.contains("open");
+        }
+
+        function closeRebindMenu() {
+            cancelRebindCapture();
+            document.getElementById("rebind-menu")?.classList.remove("open");
+        }
+
+        function refreshRebindMenu() {
+            if (isRebindMenuOpen()) renderRebindMenu();
+        }
+
+        let rebindCaptureState = null; // { stage: "from"|"to", from, handler }
+
+        function cancelRebindCapture() {
+            if (!rebindCaptureState) return;
+            document.removeEventListener("keydown", rebindCaptureState.handler, true);
+            rebindCaptureState = null;
+            rebindCapturing = false;
+        }
+
+        function startRebindCapture() {
+            cancelRebindCapture();
+            rebindCapturing = true;
+
+            const handler = (e) => {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+
+                if (e.key === "Escape") { cancelRebindCapture(); renderRebindMenu(); return; }
+
+                const info = keyInfoFromEvent(e);
+                if (!info.code) return;
+
+                if (rebindCaptureState.stage === "from") {
+                    rebindCaptureState.from = info;
+                    rebindCaptureState.stage = "to";
+                    renderRebindMenu();
+                } else {
+                    const from = rebindCaptureState.from;
+                    cancelRebindCapture();
+                    const prev = rebindConfig.bindings.find(b => b.from.code === from.code);
+                    const keepCancel = prev ? prev.cancel !== false : true;
+                    const keepSwap = prev ? prev.swap === true : false;
+                    rebindConfig.bindings = rebindConfig.bindings.filter(b => b.from.code !== from.code);
+                    rebindConfig.bindings.push({ from, to: info, cancel: keepCancel, swap: keepSwap });
+                    applyRebindState();
+                    renderRebindMenu();
+                }
+            };
+
+            rebindCaptureState = { stage: "from", from: null, handler };
+            document.addEventListener("keydown", handler, true);
+            renderRebindMenu();
+        }
+
+        function renderRebindMenu() {
+            const menu = document.getElementById("rebind-menu");
+            if (!menu) return;
+            menu.innerHTML = "";
+
+            const title = document.createElement("div");
+            title.className = "rb-title";
+            title.textContent = "Rebind Controls";
+            menu.appendChild(title);
+
+            // Capture prompt or bindings list
+            if (rebindCaptureState) {
+                const cap = document.createElement("div");
+                cap.className = "rb-capture";
+                if (rebindCaptureState.stage === "from") {
+                    cap.innerHTML = `Press the key you want to rebind…<small>Press Esc to cancel</small>`;
+                } else {
+                    cap.innerHTML = `Rebinding <b>${rebindKeyLabel(rebindCaptureState.from)}</b> — now press the key it should become…<small>Press Esc to cancel</small>`;
+                }
+                menu.appendChild(cap);
+            } else {
+                const list = document.createElement("div");
+                list.className = "rb-list";
+
+                if (!rebindConfig.bindings.length) {
+                    const empty = document.createElement("div");
+                    empty.className = "rb-empty";
+                    empty.textContent = "No rebinds yet. Add one below.";
+                    list.appendChild(empty);
+                } else {
+                    rebindConfig.bindings.forEach((b, idx) => {
+                        const row = document.createElement("div");
+                        row.className = "rb-row";
+
+                        const swapOn = b.swap === true;
+                        const map = document.createElement("div");
+                        map.className = "rb-map";
+                        map.innerHTML =
+                            `<span class="rb-key">${rebindKeyLabel(b.from)}</span>` +
+                            `<span class="rb-arrow">${swapOn ? "↔" : "→"}</span>` +
+                            `<span class="rb-key">${rebindKeyLabel(b.to)}</span>`;
+
+                        const remove = document.createElement("button");
+                        remove.type = "button";
+                        remove.className = "rb-remove";
+                        remove.textContent = "×";
+                        remove.title = "Remove this rebind";
+                        remove.setAttribute("aria-label", "Remove this rebind");
+                        remove.onclick = () => {
+                            rebindConfig.bindings.splice(idx, 1);
+                            applyRebindState();
+                            renderRebindMenu();
+                        };
+
+                        const top = document.createElement("div");
+                        top.className = "rb-row-top";
+                        top.appendChild(map);
+                        top.appendChild(remove);
+
+                        // Build a labelled toggle switch for a per-binding option.
+                        // Updates in place (no full re-render) so the switch animates.
+                        const makeToggle = (label, onChange) => {
+                            const toggle = document.createElement("div");
+                            toggle.className = "rb-toggle";
+                            const tText = document.createElement("div");
+                            tText.className = "rb-toggle-text";
+                            tText.innerHTML = `<div class="rb-toggle-label"></div>`;
+                            tText.querySelector(".rb-toggle-label").textContent = label;
+                            const sw = document.createElement("button");
+                            sw.type = "button";
+                            sw.className = "ac-switch";
+                            sw.setAttribute("role", "switch");
+                            sw.setAttribute("aria-label", label + " for this rebind");
+                            sw.innerHTML = `<span class="ac-knob"></span>`;
+                            sw.onclick = onChange;
+                            toggle.appendChild(tText);
+                            toggle.appendChild(sw);
+                            return { toggle, sw };
+                        };
+
+                        // Persist + broadcast without re-rendering the menu, so the switch animates in place.
+                        const persist = () => {
+                            saveRebindConfig();
+                            broadcastRebindConfig();
+                            updateRebindButtonState();
+                        };
+                        const cancel = makeToggle("Cancel original input", () => {
+                            b.cancel = !(b.cancel !== false);
+                            if (!b.cancel) b.swap = false; // turning cancel off also turns swap off
+                            persist();
+                            syncRow();
+                        });
+                        const swap = makeToggle("Swap both ways", () => {
+                            b.swap = !(b.swap === true);
+                            if (b.swap) b.cancel = true; // default cancel on when enabling swap
+                            persist();
+                            syncRow();
+                        });
+
+                        // Reflect current binding state onto this row's controls (animated).
+                        const syncRow = () => {
+                            const sw = b.swap === true;
+                            const cn = b.cancel !== false;
+                            map.querySelector(".rb-arrow").textContent = sw ? "↔" : "→";
+                            swap.sw.classList.toggle("on", sw);
+                            swap.sw.setAttribute("aria-checked", sw ? "true" : "false");
+                            cancel.sw.classList.toggle("on", cn);
+                            cancel.sw.setAttribute("aria-checked", cn ? "true" : "false");
+                        };
+                        syncRow();
+
+                        row.appendChild(top);
+                        row.appendChild(cancel.toggle);
+                        row.appendChild(swap.toggle);
+                        list.appendChild(row);
+                    });
+                }
+                menu.appendChild(list);
+
+                const add = document.createElement("button");
+                add.type = "button";
+                add.className = "rb-add";
+                add.textContent = "+ Add rebind";
+                add.onclick = startRebindCapture;
+                menu.appendChild(add);
+            }
+        }
+
+        function openRebindMenu() {
+            const btn = document.getElementById("rebind-btn");
+            const menu = ensureRebindMenu();
+            renderRebindMenu();
+            menu.classList.add("open");
+
+            if (!btn) return;
+            const anchor = btn.getBoundingClientRect();
+            const rect = menu.getBoundingClientRect();
+            const margin = 8;
+            let left = anchor.right - rect.width;
+            let top = anchor.bottom + 6;
+            left = Math.max(margin, Math.min(left, window.innerWidth - rect.width - margin));
+            top = Math.max(margin, Math.min(top, window.innerHeight - rect.height - margin));
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+        }
+
+        function toggleRebindMenu() {
+            if (isRebindMenuOpen()) closeRebindMenu();
+            else openRebindMenu();
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Escape") return;
+            if (rebindCapturing) return; // capture handler deals with Escape itself
+            closeRebindMenu();
+        });
+
         (function protectTabIdentity() {
             const targetTitle = "New tab";
 
@@ -2949,6 +3648,7 @@
             tab.panel.remove();
             tab.button.remove();
             tabs.delete(id);
+            updateShareVisibility();
 
             if (idx !== -1) tabOrder.splice(idx, 1);
 
@@ -3186,6 +3886,7 @@
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
+            updateShareVisibility();
             tabOrder.unshift(id);
             if (opts.background) {
                 setTabStatus(id, "loading");
@@ -3503,9 +4204,81 @@
 })();
 <\/script>`;
 
-            if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${clickScript}</body>`);
-            if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, `${clickScript}</head>`);
-            return `${html}${clickScript}`;
+            let out;
+            if (/<\/body>/i.test(html)) out = html.replace(/<\/body>/i, `${clickScript}</body>`);
+            else if (/<\/head>/i.test(html)) out = html.replace(/<\/head>/i, `${clickScript}</head>`);
+            else out = `${html}${clickScript}`;
+            return injectRebindSupport(out);
+        }
+
+        // Shared key-remap engine used by both the main page and every game iframe.
+        function injectRebindSupport(html) {
+            const cfgJson = JSON.stringify(rebindConfig).replace(/</g, "\\u003c");
+            const rebindScript = `
+<script>
+(function() {
+  var cfg = ${cfgJson};
+  if (window.__REBIND_INSTALLED) { window.__setRebindConfig && window.__setRebindConfig(cfg); return; }
+  window.__REBIND_INSTALLED = true;
+
+  function editable(el) {
+    if (!el) return false;
+    var tag = (el.tagName || "").toUpperCase();
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+    return !!el.isContentEditable;
+  }
+
+  function makeEvent(type, k) {
+    var ev = new KeyboardEvent(type, {
+      key: k.key, code: k.code, location: k.location || 0,
+      bubbles: true, cancelable: true, composed: true, view: window, repeat: false
+    });
+    try { Object.defineProperty(ev, "keyCode", { get: function() { return k.keyCode || 0; } }); } catch (e) {}
+    try { Object.defineProperty(ev, "which", { get: function() { return k.keyCode || 0; } }); } catch (e) {}
+    try { Object.defineProperty(ev, "key", { get: function() { return k.key; } }); } catch (e) {}
+    try { Object.defineProperty(ev, "code", { get: function() { return k.code; } }); } catch (e) {}
+    ev.__remap = true;
+    return ev;
+  }
+
+  function handle(e) {
+    if (e.__remap) return;
+    if (!cfg.bindings || !cfg.bindings.length) return;
+    if (editable(e.target)) return;
+    var to = null, cancel = true;
+    for (var i = 0; i < cfg.bindings.length; i++) {
+      var b = cfg.bindings[i];
+      if (b.from.code === e.code) { to = b.to; cancel = b.cancel !== false; break; }
+      if (b.swap && b.to.code === e.code) { to = b.from; cancel = b.cancel !== false; break; }
+    }
+    if (!to) return;
+    var target = e.target || document.activeElement || document.body || document.documentElement;
+    try { target.dispatchEvent(makeEvent(e.type, to)); } catch (err) {}
+    if (cancel) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+    }
+  }
+
+  window.__setRebindConfig = function(c) {
+    if (!c) return;
+    cfg.bindings = Array.isArray(c.bindings) ? c.bindings : [];
+  };
+
+  window.addEventListener("message", function(e) {
+    var d = e.data;
+    if (d && d.type === "REBIND_CONFIG") window.__setRebindConfig(d.config);
+  });
+
+  document.addEventListener("keydown", handle, true);
+  document.addEventListener("keyup", handle, true);
+})();
+<\/script>`;
+
+            if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${rebindScript}</body>`);
+            if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, `${rebindScript}</head>`);
+            return `${html}${rebindScript}`;
         }
 
         function applyMuteToIframe(iframe) {
@@ -3929,6 +4702,7 @@ ${icons}
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
+            updateShareVisibility();
             tabOrder.unshift(id);
             activateTab(id);
         }
@@ -3984,6 +4758,7 @@ ${icons}
 
             const tab = { id, title, button, panel };
             tabs.set(id, tab);
+            updateShareVisibility();
             tabOrder.unshift(id);
             activateTab(id);
 
